@@ -41,7 +41,7 @@ class DashboardController extends GetxController {
       'icon_off': 'assets/ic_settings_grey.png',
       'icon_on': 'assets/ic_settings_purple.png',
       'label': 'Settings',
-      'fragment': const SetingsFragment(),
+      'fragment': const SettingsFragment(),
     },
   ];
 }
