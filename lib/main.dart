@@ -2,10 +2,13 @@ import 'package:cowok/config/appwrite.dart';
 import 'package:cowok/config/color.dart';
 import 'package:cowok/config/enum.dart';
 import 'package:cowok/config/session.dart';
+import 'package:cowok/controllers/booking_controllers.dart';
 import 'package:cowok/models/worker_model.dart';
 import 'package:cowok/pages/booking_pages.dart';
 import 'package:cowok/pages/checkout_page.dart';
 import 'package:cowok/pages/dashboard.dart';
+import 'package:cowok/pages/edit_profile_page.dart';
+import 'package:cowok/pages/fragments/order_fragment.dart';
 import 'package:cowok/pages/get_started_pages.dart';
 import 'package:cowok/pages/list_worker_pages.dart';
 import 'package:cowok/pages/sign_in_page.dart';
@@ -14,10 +17,15 @@ import 'package:cowok/pages/succes_booking_page.dart';
 import 'package:cowok/pages/worker_profile_page.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/get_instance.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  Get.put(BookingController()); // Inisialisasi BookingController di awal aplikasi
   Appwrite.init();
   runApp(const MyApp());
 }
@@ -27,7 +35,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData.light(
         useMaterial3: true,
@@ -79,7 +88,9 @@ class MyApp extends StatelessWidget {
         },
         AppRoute.checkout.name: (context) => const CheckoutPage(),
         AppRoute.successBooking.name: (context) => const SuccessBookingPage(),
-      
+       AppRoute.editProfile.name: (context) => const EditeProfile(), // Tambahkan route ke Edit Profile
+      //  AppRoute.orderPage.name: (context) => const OrderFragment(), // Tambahkan route ke Edit Profile
+       
 
       },
     );

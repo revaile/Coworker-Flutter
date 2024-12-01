@@ -6,8 +6,6 @@ import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
-
 class SettingsFragment extends StatefulWidget {
   const SettingsFragment({super.key});
 
@@ -131,9 +129,17 @@ class _SettingsFragmentState extends State<SettingsFragment> {
           ),
         ),
         DView.spaceHeight(),
-        itemSetting('assets/ic_edit.png', 'Edit Profile'),
+        GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, AppRoute.editProfile.name);
+            },
+            child: itemSetting('assets/ic_edit.png', 'Edit Profile')),
         itemDivider(),
-        itemSetting('assets/ic_invoice.png', 'Invoices'),
+        GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, AppRoute.orderPage.name);
+            },
+            child: itemSetting('assets/ic_invoice.png', 'History')),
         itemDivider(),
         itemSetting('assets/ic_payment_setting.png', 'Payments'),
         itemDivider(),

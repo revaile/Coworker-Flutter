@@ -8,5 +8,7 @@ enum AppRoute {
   booking,
   checkout,
   successBooking,
-  userprofile,
+  userprofile, 
+  editProfile, 
+  completedList, orderPage,
 }

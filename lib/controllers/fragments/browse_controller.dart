@@ -84,24 +84,28 @@ class BrowseController extends GetxController {
     },
   ];
 
-  List curatedTips = [
-    {
-      'image': 'assets/news1.png',
-      'name': '12 Tips Seleksi Pekerja',
-      'category': 'Productivity',
-      'is_popular': false,
-    },
-    {
-      'image': 'assets/news3.png',
-      'name': 'Kapan Harus Scale Up?',
-      'category': 'BUssiness',
-      'is_popular': true,
-    },
-    {
-      'image': 'assets/news2.png',
-      'name': 'Pemilihan Alat Cleaner',
-      'category': 'Health',
-      'is_popular': false,
-    },
-  ];
+List curatedTips = [
+  {
+    'image': 'assets/news1.png',
+    'name': '12 Tips Seleksi Pekerja',
+    'category': 'Productivity',
+    'is_popular': false,
+    'url': 'https://www.google.com/search?q=12+Tips+Seleksi+Pekerja',
+  },
+  {
+    'image': 'assets/news3.png',
+    'name': 'Kapan Harus Scale Up?',
+    'category': 'Business',
+    'is_popular': true,
+    'url': 'https://www.google.com/search?q=Kapan+Harus+Scale+Up',
+  },
+  {
+    'image': 'assets/news2.png',
+    'name': 'Pemilihan Alat Cleaner',
+    'category': 'Health',
+    'is_popular': false,
+    'url': 'https://www.google.com/search?q=Pemilihan+Alat+Cleaner',
+  },
+];
+
 }

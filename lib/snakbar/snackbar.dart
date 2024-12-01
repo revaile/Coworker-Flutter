@@ -1,10 +1,10 @@
+import 'package:cowok/config/app_format.dart';
+import 'package:cowok/controllers/booking_controllers.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 void showBottomSheetToEditHour(
     BuildContext context, int currentHour, Function(int) onUpdate) {
-  final TextEditingController controller =
-      TextEditingController(text: currentHour.toString());
-
   showModalBottomSheet(
     context: context,
     shape: const RoundedRectangleBorder(
@@ -49,40 +49,14 @@ class _EditHourContentState extends State<_EditHourContent> {
     selectedDuration = widget.currentHour;
   }
 
-  void _updateSelectedDuration(int duration) {
-    setState(() {
-      selectedDuration = duration;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final TextEditingController controller =
-        TextEditingController(text: selectedDuration.toString());
+    final BookingController bookingController = Get.put(BookingController());
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        // const Text(
-        //   'Edit Hours',
-        //   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        // ),
-        // const SizedBox(height: 20),
-        // TextField(
-        //   controller: controller,
-        //   keyboardType: TextInputType.number,
-        //   decoration: const InputDecoration(
-        //     labelText: 'Enter new hours',
-        //     border: OutlineInputBorder(),
-        //   ),
-        //   onChanged: (value) {
-        //     final int? parsedValue = int.tryParse(value);
-        //     if (parsedValue != null) {
-        //       _updateSelectedDuration(parsedValue);
-        //     }
-        //   },
-        // ),
         const SizedBox(height: 20),
         const Text(
           'How many hours?',
@@ -94,16 +68,20 @@ class _EditHourContentState extends State<_EditHourContent> {
           child: ListView.builder(
             padding: const EdgeInsets.only(left: 20),
             scrollDirection: Axis.horizontal,
-            itemCount: 10, // Example durations: 1 to 10 hours
+            itemCount: bookingController.hourDuartion.length,
             itemBuilder: (context, index) {
-              int itemDuration = index + 1; // Durations 1-10
+              int itemDuration = bookingController.hourDuartion[index];
               return GestureDetector(
                 onTap: () {
-                  _updateSelectedDuration(itemDuration);
-                  controller.text = itemDuration.toString();
+                  setState(() {
+                    selectedDuration = itemDuration;
+                  });
                 },
-                child: _buildDurationItem(context, itemDuration,
-                    isSelected: itemDuration == selectedDuration),
+                child: _buildDurationItem(
+                  context,
+                  itemDuration,
+                  isSelected: itemDuration == selectedDuration,
+                ),
               );
             },
           ),
@@ -111,53 +89,58 @@ class _EditHourContentState extends State<_EditHourContent> {
         const SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            Text(
-              'Sub Total',
-              style: TextStyle(fontSize: 16, color: Colors.black),
-            ),
-            Text(
-              '10.00',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+          children: [
+            const Text('Selected Duration'),
+            Text('$selectedDuration hours'),
           ],
         ),
         const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            Text(
-              'Hiring duration',
-              style: TextStyle(fontSize: 16, color: Colors.black),
-            ),
-            Text(
-              '10.00',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-                fontWeight: FontWeight.w600,
-              ),
+          children: [
+            const Text('Sub Total'),
+            GetBuilder<BookingController>(
+              builder: (controller) {
+                return Text(
+                  AppFormat.price(
+                      controller.bookingDetail.subtotal), // Format subtotal
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                );
+              },
             ),
           ],
         ),
         const SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: () {
-            int? newHour = int.tryParse(controller.text);
-            if (newHour != null) {
-              widget.onUpdate(newHour);
-              Navigator.pop(context); // Close BottomSheet
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Invalid input!')),
+        Center(
+          child: ElevatedButton(
+            onPressed: () {
+              // Update durasi di controller
+              bookingController.setDuration(
+                selectedDuration,
+                bookingController.bookingDetail.worker?.hourRate ?? 0,
               );
-            }
-          },
-          child: const Text('Save'),
+
+              // Callback untuk memperbarui UI eksternal
+              widget.onUpdate(selectedDuration);
+
+              // Snackbar konfirmasi
+              Get.snackbar(
+                "Duration Updated",
+                "Duration set to $selectedDuration hours.",
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: Colors.green,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 3),
+              );
+
+              // Tutup BottomSheet
+              Navigator.pop(context);
+            },
+            child: const Text('Confirm'),
+          ),
         ),
       ],
     );

@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="cowok"
         android:name="${applicationName}"
@@ -37,6 +38,8 @@
                     <category android:name="android.intent.category.DEFAULT" />
                     <category android:name="android.intent.category.BROWSABLE" />
                     <data android:scheme="appwrite-callback-67288a07001efed620f8" />
+                    <data android:scheme="http"/>
+                    <data android:scheme="https"/>
                 </intent-filter>
                 </activity>
     </application>

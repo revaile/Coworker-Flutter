@@ -1,6 +1,7 @@
 import 'package:cowok/pages/fragments/browse_fragment.dart';
 import 'package:cowok/pages/fragments/order_fragment.dart';
 import 'package:cowok/pages/fragments/setings_fragment.dart';
+import 'package:cowok/pages/fragments/wallet_fragment.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -35,7 +36,7 @@ class DashboardController extends GetxController {
       'icon_off': 'assets/ic_wallet_grey.png',
       'icon_on': 'assets/ic_wallet_grey.png',
       'label': 'Wallet',
-      'fragment': DView.empty('Wallet'),
+      'fragment': const WalletFragment(),
     },
     {
       'icon_off': 'assets/ic_settings_grey.png',
