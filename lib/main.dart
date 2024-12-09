@@ -16,6 +16,7 @@ import 'package:cowok/pages/list_worker_pages.dart';
 import 'package:cowok/pages/productivity_page.dart';
 import 'package:cowok/pages/sign_in_page.dart';
 import 'package:cowok/pages/sign_up_page.dart';
+import 'package:cowok/pages/splash_screen_page.dart';
 import 'package:cowok/pages/succes_booking_page.dart';
 import 'package:cowok/pages/worker_profile_page.dart';
 import 'package:d_view/d_view.dart';
@@ -54,7 +55,7 @@ class MyApp extends StatelessWidget {
                   minimumSize: MaterialStatePropertyAll(Size.fromHeight(52)),
                   textStyle: MaterialStatePropertyAll(
                       TextStyle(fontSize: 16, fontWeight: FontWeight.bold))))),
-      initialRoute: AppRoute.dashboard.name,
+      initialRoute: '/',
       routes: {
         AppRoute.getStarted.name: (context) => const GetStartedPages(),
         AppRoute.signUp.name: (context) => const SignUpPage(),
@@ -97,6 +98,7 @@ class MyApp extends StatelessWidget {
         '/tipsSelection': (context) => const ProductivityPage(),
         '/scaleUpTips': (context) => const BusinesPages(),
         '/cleanerSelection': (context) => const HealthPages(),
+        '/': (context) => const SplashScreenPage(),
       },
     );
   }
