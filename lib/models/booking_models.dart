@@ -17,6 +17,7 @@ class BookingModel {
   String $createdAt;
   String $updatedAt;
   WorkerModel? worker;
+  
 
   BookingModel({
     required this.userId,

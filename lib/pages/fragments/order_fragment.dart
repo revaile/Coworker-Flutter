@@ -156,38 +156,15 @@ class _OrderFragmentState extends State<OrderFragment> {
                       ],
                     ),
                   ),
-                  Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          showBottomSheetToEditHour(
-                              context, booking.hiringDuration, (newHour) {
-                            // Lakukan sesuatu dengan nilai baru, misalnya:
-                            booking.hiringDuration = newHour;
-                            print('Updated hour: $newHour');
-                          });
-                        },
-                        child: Image.asset(
-                          'assets/ic_edit.png',
-                          width: 20,
-                        ),
-                      ),
-                      DView.spaceHeight(5),
-                      Row(
-                        children: [
-                          Text(
-                            booking.hiringDuration.toString(),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const Text(' hours'),
-                        ],
-                      ),
-                    ],
-                  )
+                  Text(
+                    booking.hiringDuration.toString(),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const Text(' hours'),
                 ],
               ),
             ),

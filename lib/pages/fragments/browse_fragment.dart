@@ -88,66 +88,71 @@ class _BrowseFragmentState extends State<BrowseFragment> {
           const SectionTitle(text: 'Curated Tips'),
           Column(
             children: browseController.curatedTips.map((item) {
-              return Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: Row(
-                  children: [
-                    Stack(
-                      children: [
-                        Image.asset(
-                          item['image'],
-                          width: 70,
-                          height: 70,
-                        ),
-                        if (item['is_popular'])
-                          Positioned(
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                color: Color(0xffBFA8FF),
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(16),
-                                  bottomRight: Radius.circular(16),
+              return GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, item['route']);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Row(
+                    children: [
+                      Stack(
+                        children: [
+                          Image.asset(
+                            item['image'],
+                            width: 70,
+                            height: 70,
+                          ),
+                          if (item['is_popular'])
+                            Positioned(
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  color: Color(0xffBFA8FF),
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(16),
+                                    bottomRight: Radius.circular(16),
+                                  ),
                                 ),
-                              ),
-                              height: 24,
-                              alignment: Alignment.center,
-                              child: const Text(
-                                'Popular',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1,
+                                height: 24,
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  'Popular',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500,
+                                    height: 1,
+                                  ),
                                 ),
                               ),
                             ),
+                        ],
+                      ),
+                      DView.spaceWidth(),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item['name'],
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
                           ),
-                      ],
-                    ),
-                    DView.spaceWidth(),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item['name'],
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
+                          Text(
+                            item['category'],
+                            style: const TextStyle(
+                              color: Colors.grey,
+                            ),
                           ),
-                        ),
-                        Text(
-                          item['category'],
-                          style: const TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               );
             }).toList(),
@@ -486,28 +491,32 @@ class _BrowseFragmentState extends State<BrowseFragment> {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
-          Container(
-            height: 50,
-            width: 50,
-            decoration: BoxDecoration(
-              color: const Color(0xffBFA8FF),
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.white,
-                width: 2,
-              ),
-            ),
-            alignment: Alignment.center,
-            child: Obx(() {
-              return Text(
-                userController.data.name?[0] ?? '',
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black,
+          GestureDetector(
+            onTap: () =>
+                Navigator.pushNamed(context, AppRoute.editProfile.name),
+            child: Container(
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                color: const Color(0xffBFA8FF),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.white,
+                  width: 2,
                 ),
-              );
-            }),
+              ),
+              alignment: Alignment.center,
+              child: Obx(() {
+                return Text(
+                  userController.data.name?[0] ?? '',
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
+                );
+              }),
+            ),
           ),
           DView.spaceWidth(12),
           Expanded(

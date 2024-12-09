@@ -5,12 +5,15 @@ import 'package:cowok/config/session.dart';
 import 'package:cowok/controllers/booking_controllers.dart';
 import 'package:cowok/models/worker_model.dart';
 import 'package:cowok/pages/booking_pages.dart';
+import 'package:cowok/pages/busines_pages.dart';
 import 'package:cowok/pages/checkout_page.dart';
 import 'package:cowok/pages/dashboard.dart';
 import 'package:cowok/pages/edit_profile_page.dart';
 import 'package:cowok/pages/fragments/order_fragment.dart';
 import 'package:cowok/pages/get_started_pages.dart';
+import 'package:cowok/pages/health_pages.dart';
 import 'package:cowok/pages/list_worker_pages.dart';
+import 'package:cowok/pages/productivity_page.dart';
 import 'package:cowok/pages/sign_in_page.dart';
 import 'package:cowok/pages/sign_up_page.dart';
 import 'package:cowok/pages/succes_booking_page.dart';
@@ -22,10 +25,10 @@ import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  Get.put(BookingController()); // Inisialisasi BookingController di awal aplikasi
+  Get.put(
+      BookingController()); // Inisialisasi BookingController di awal aplikasi
   Appwrite.init();
   runApp(const MyApp());
 }
@@ -88,10 +91,12 @@ class MyApp extends StatelessWidget {
         },
         AppRoute.checkout.name: (context) => const CheckoutPage(),
         AppRoute.successBooking.name: (context) => const SuccessBookingPage(),
-       AppRoute.editProfile.name: (context) => const EditeProfile(), // Tambahkan route ke Edit Profile
-      //  AppRoute.orderPage.name: (context) => const OrderFragment(), // Tambahkan route ke Edit Profile
-       
-
+        AppRoute.editProfile.name: (context) =>
+            const EditeProfile(), // Tambahkan route ke Edit Profile
+        //  AppRoute.orderPage.name: (context) => const OrderFragment(), // Tambahkan route ke Edit Profile
+        '/tipsSelection': (context) => const ProductivityPage(),
+        '/scaleUpTips': (context) => const BusinesPages(),
+        '/cleanerSelection': (context) => const HealthPages(),
       },
     );
   }

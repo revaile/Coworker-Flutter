@@ -91,6 +91,8 @@ List curatedTips = [
     'category': 'Productivity',
     'is_popular': false,
     'url': 'https://www.google.com/search?q=12+Tips+Seleksi+Pekerja',
+    'route': '/tipsSelection',
+
   },
   {
     'image': 'assets/news3.png',
@@ -98,6 +100,8 @@ List curatedTips = [
     'category': 'Business',
     'is_popular': true,
     'url': 'https://www.google.com/search?q=Kapan+Harus+Scale+Up',
+    'route': '/scaleUpTips',
+
   },
   {
     'image': 'assets/news2.png',
@@ -105,6 +109,8 @@ List curatedTips = [
     'category': 'Health',
     'is_popular': false,
     'url': 'https://www.google.com/search?q=Pemilihan+Alat+Cleaner',
+    'route': '/cleanerSelection',
+
   },
 ];
 
