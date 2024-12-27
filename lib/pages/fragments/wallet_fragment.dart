@@ -56,7 +56,6 @@ class _WalletFragmentState extends State<WalletFragment> {
                         subtitle: 'Start hiring and grow',
                         iconLeft: 'assets/ic_back.png',
                         functionLeft: () {
-                          Navigator.pop(context);
                         },
                       ),
                       payments(),

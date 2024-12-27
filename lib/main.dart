@@ -9,7 +9,6 @@ import 'package:cowok/pages/busines_pages.dart';
 import 'package:cowok/pages/checkout_page.dart';
 import 'package:cowok/pages/dashboard.dart';
 import 'package:cowok/pages/edit_profile_page.dart';
-import 'package:cowok/pages/fragments/order_fragment.dart';
 import 'package:cowok/pages/get_started_pages.dart';
 import 'package:cowok/pages/health_pages.dart';
 import 'package:cowok/pages/list_worker_pages.dart';
