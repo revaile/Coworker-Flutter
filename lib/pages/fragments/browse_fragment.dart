@@ -543,24 +543,6 @@ class _BrowseFragmentState extends State<BrowseFragment> {
               ],
             ),
           ),
-          IconButton.filled(
-            onPressed: () {},
-            icon: const Badge(
-              smallSize: 10,
-              backgroundColor: Colors.red,
-              child: ImageIcon(
-                AssetImage('assets/ic_notification.png'),
-              ),
-            ),
-            style: const ButtonStyle(
-              backgroundColor: MaterialStatePropertyAll(
-                Colors.white,
-              ),
-              foregroundColor: MaterialStatePropertyAll(
-                Colors.black,
-              ),
-            ),
-          ),
         ],
       ),
     );
