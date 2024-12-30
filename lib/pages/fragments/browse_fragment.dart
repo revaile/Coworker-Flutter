@@ -30,6 +30,7 @@ class _BrowseFragmentState extends State<BrowseFragment> {
     browseController.fetchTopRatedWorkers();
     browseController.fetchNewcomerWorkers();
     super.initState();
+    fetchStats();
   }
 
   @override
@@ -104,9 +105,7 @@ class _BrowseFragmentState extends State<BrowseFragment> {
         DView.spaceHeight(50),
         latestStats(),
         DView.spaceHeight(30),
-        highRatedWorkers(),
-        DView.spaceHeight(30),
-        newcomers(),
+        displayWorkers(),
         DView.spaceHeight(30),
         curatedTips(),
         DView.spaceHeight(30),
@@ -199,187 +198,261 @@ class _BrowseFragmentState extends State<BrowseFragment> {
     );
   }
 
-  Widget newcomers() {
+  Widget displayWorkers() {
     return Obx(() {
-      final newcomersList = browseController.newcomers;
-      final filtered = browseController.filteredWorkers;
+      final workers = browseController.filteredWorkers;
+      final title = browseController.sectionTitle;
 
-      if (newcomersList.isEmpty) {
-        return const Center(
-          child: Text(
-            'No newcomers found.',
-            style: TextStyle(color: Colors.grey, fontSize: 16),
-          ),
-        );
-      }
-
+      // Use ternary condition to check if search query is empty or not
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SectionTitle(text: 'Newcomers', autoPadding: true),
-          DView.spaceHeight(),
-          GridView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisExtent: 74,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-            ),
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: filtered.length,
-            itemBuilder: (context, index) {
-              WorkerModel worker = filtered[index];
-              return Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xffeaeaea)),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+          title.isEmpty
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Image.asset(
-                      Appwrite.imageURL(worker.image) ?? 'assets/placeholder.png',
-                      width: 46,
-                      height: 46,
-                    ),
-                    DView.spaceWidth(12),
-                    Expanded(
-                      child: Column(
+                    // High Rated Workers section
+                    if (browseController.topRated.isNotEmpty)
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            worker.name,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
+                          const SectionTitle(
+                              text: 'High Rated Workers', autoPadding: true),
+                          DView.spaceHeight(),
+                          SizedBox(
+                            height: 120,
+                            child: ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: browseController.topRated.length,
+                              itemBuilder: (context, index) {
+                                WorkerModel worker =
+                                    browseController.topRated[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      AppRoute.workerProfile.name,
+                                      arguments: worker,
+                                    );
+                                  },
+                                  child: Container(
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16),
+                                      border: Border.all(
+                                          color: const Color(0xffeaeaea)),
+                                    ),
+                                    margin: EdgeInsets.only(
+                                      left: index == 0 ? 20 : 8,
+                                      right: index ==
+                                              browseController.topRated.length -
+                                                  1
+                                          ? 20
+                                          : 8,
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Image.network(
+                                          Appwrite.imageURL(worker.image),
+                                          width: 46,
+                                          height: 46,
+                                          fit: BoxFit.cover,
+                                        ),
+                                        DView.spaceHeight(6),
+                                        Text(
+                                          worker.name,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        DView.spaceHeight(4),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Image.asset(
+                                              'assets/ic_star_small.png',
+                                              height: 16,
+                                              width: 16,
+                                            ),
+                                            DView.spaceWidth(2),
+                                            Text(
+                                              '${worker.rating}',
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           ),
-                            Text(
-                              worker.category,
-                              style: const TextStyle(
-                                color: Colors.grey,
+                        ],
+                      ),
+
+                    // Newcomers section
+                    if (browseController.newcomers.isNotEmpty)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SectionTitle(
+                              text: 'Newcomers', autoPadding: true),
+                          DView.spaceHeight(),
+                          GridView.builder(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisExtent: 74,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                            ),
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: browseController.newcomers.length,
+                            itemBuilder: (context, index) {
+                              WorkerModel worker =
+                                  browseController.newcomers[index];
+                              return Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                      color: const Color(0xffeaeaea)),
+                                ),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.network(
+                                      Appwrite.imageURL(worker.image),
+                                      width: 46,
+                                      height: 46,
+                                    ),
+                                    DView.spaceWidth(12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            worker.name,
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          Text(
+                                            worker.category,
+                                            style: const TextStyle(
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                  ],
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SectionTitle(
+                        text: title, autoPadding: true), // 'Search Results'
+                    DView.spaceHeight(),
+                    SizedBox(
+                      height: 120,
+                      child: ListView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: workers.length,
+                        itemBuilder: (context, index) {
+                          WorkerModel worker = workers[index];
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                AppRoute.workerProfile.name,
+                                arguments: worker,
+                              );
+                            },
+                            child: Container(
+                              width: 100,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                border:
+                                    Border.all(color: const Color(0xffeaeaea)),
+                              ),
+                              margin: EdgeInsets.only(
+                                left: index == 0 ? 20 : 8,
+                                right: index ==
+                                        browseController.topRated.length - 1
+                                    ? 20
+                                    : 8,
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.network(
+                                    Appwrite.imageURL(worker.image),
+                                    width: 46,
+                                    height: 46,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  DView.spaceHeight(6),
+                                  Text(
+                                    worker.name,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  DView.spaceHeight(4),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/ic_star_small.png',
+                                        height: 16,
+                                        width: 16,
+                                      ),
+                                      DView.spaceWidth(2),
+                                      Text(
+                                        '${worker.rating}',
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
-                            Row(
-                              children: [
-                                Image.network(
-                                  'assets/ic_star_small.png',
-                                  height: 16,
-                                  width: 16,
-                                ),
-                                DView.spaceWidth(2),
-                                Text(
-                                  '${worker.hourRate}',
-                                  style: const TextStyle(color: Colors.black),
-                                ),
-                              ],
-                            ),
-                        ],
+                          );
+                        },
                       ),
                     ),
                   ],
                 ),
-              );
-            },
-          ),
-        ],
-      );
-    });
-  }
-
-  Widget highRatedWorkers() {
-    return Obx(() {
-      final highRatedWorkers = browseController.topRated;
-      final filtered = browseController.filteredWorkers;
-
-      if (highRatedWorkers.isEmpty) {
-        return const Center(
-          child: Text(
-            'No High-rated workers found.',
-            style: TextStyle(color: Colors.grey, fontSize: 16),
-          ),
-        );
-      }
-
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SectionTitle(text: 'High Rated Workers', autoPadding: true),
-          DView.spaceHeight(),
-          SizedBox(
-            height: 120,
-            child: ListView.builder(
-              physics: const BouncingScrollPhysics(),
-              scrollDirection: Axis.horizontal,
-              itemCount: filtered.length,
-              itemBuilder: (context, index) {
-                WorkerModel worker = filtered[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      AppRoute.workerProfile.name,
-                      arguments: worker,
-                    );
-                  },
-                  child: Container(
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: const Color(0xffeaeaea)),
-                    ),
-                    margin: EdgeInsets.only(
-                      left: index == 0 ? 20 : 8,
-                      right: index == filtered.length - 1 ? 20 : 8,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.network(
-                          Appwrite.imageURL(worker.image),
-                          width: 46,
-                          height: 46,
-                          fit: BoxFit.cover,
-                        ),
-                        DView.spaceHeight(6),
-                        Text(
-                          worker.name,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          ),
-                        ),
-                        DView.spaceHeight(4),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/ic_star_small.png',
-                              height: 16,
-                              width: 16,
-                            ),
-                            DView.spaceWidth(2),
-                            Text(
-                              '${worker.rating}',
-                              style: const TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
         ],
       );
     });

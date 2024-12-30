@@ -7,6 +7,10 @@ class BrowseController extends GetxController {
     Get.delete<BrowseController>(force: true);
   }
 
+  final _sectionTitle = ''.obs;
+  String get sectionTitle => _sectionTitle.value;
+  set sectionTitle(String title) => _sectionTitle.value = title;
+
   List categories = [
     {
       'label': 'Driver',
@@ -43,7 +47,12 @@ class BrowseController extends GetxController {
   // Data pekerja baru
   final _newcomers = <WorkerModel>[].obs;
   List<WorkerModel> get newcomers => _newcomers;
-  set newComers(List<WorkerModel> workers) => _newcomers.value = workers;
+  set newcomers(List<WorkerModel> workers) => _newcomers.value = workers;
+
+  // Status for fetching newcomers workers
+  final _statusNewcomers = ''.obs;
+  String get statusNewcomers => _statusNewcomers.value;
+  set statusNewcomers(String status) => _statusNewcomers.value = status;
 
   // Daftar pekerja yang difilter berdasarkan pencarian
   final _filteredWorkers = <WorkerModel>[].obs;
@@ -79,16 +88,28 @@ class BrowseController extends GetxController {
 
   // Fungsi untuk melakukan pencarian pekerja berdasarkan nama
   searchWorker(String query) {
-    if (query.isEmpty) {
-      // Jika pencarian kosong, tampilkan semua pekerja
-      filteredWorkers = topRated;
-    } else {
-      // Filter pekerja berdasarkan nama yang mengandung teks pencarian
-      filteredWorkers = topRated
-          .where((worker) => worker.name.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    }
+  if (query.isEmpty) {
+    // If search query is empty, show all workers in both categories
+    filteredWorkers = [];
+    sectionTitle = '';  // Empty title, no search results
+  } else {
+    // Filter workers based on the search query
+    var filteredTopRated = topRated
+        .where((worker) => worker.name.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+
+    var filteredNewcomers = newcomers
+        .where((worker) => worker.name.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+
+    // If there's a query, only show filtered workers in a single section
+    filteredWorkers = [...filteredTopRated, ...filteredNewcomers];
+    sectionTitle = 'Search Results'; // Title for search results
   }
+  update();  // Refresh the UI
+}
+
+
 
   // Fetch top-rated workers from the database
   Future<void> fetchTopRatedWorkers() async {
@@ -111,11 +132,11 @@ class BrowseController extends GetxController {
     final response = await WorkerDatasource.fetchNewcomers();
     response.fold(
       (errorMessage) {
-        statusTopRated = errorMessage;
+        statusNewcomers = errorMessage;
       },
       (workers) {
-        statusTopRated = 'Success';
-        topRated = workers;
+        statusNewcomers = 'Success';
+        newcomers  = workers;
       },
     );
   }
