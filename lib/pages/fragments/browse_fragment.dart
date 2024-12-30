@@ -1,6 +1,7 @@
 import 'package:cowok/config/enum.dart';
 import 'package:cowok/controllers/fragments/browse_controller.dart';
 import 'package:cowok/controllers/user_controller.dart';
+import 'package:cowok/datasources/worker_datasource.dart';
 import 'package:cowok/widgets/section_title.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,33 @@ class BrowseFragment extends StatefulWidget {
 class _BrowseFragmentState extends State<BrowseFragment> {
   final browseController = Get.put(BrowseController());
   final userController = Get.put(UserController());
+
+  int totalWorkers = 0;
+  int availableWorkers = 0;
+  String errorMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchStats();
+  }
+
+  Future<void> fetchStats() async {
+    final result = await WorkerDatasource.fetchStats();
+    result.fold(
+      (error) {
+        setState(() {
+          errorMessage = error;
+        });
+      },
+      (data) {
+        setState(() {
+          totalWorkers = data['total']!;
+          availableWorkers = data['available']!;
+        });
+      },
+    );
+  }
 
   @override
   void dispose() {
@@ -368,7 +396,7 @@ class _BrowseFragmentState extends State<BrowseFragment> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SectionTitle(text: 'Latest Stats'),
+          const SectionTitle(text: 'Latest Worker stats'),
           DView.spaceHeight(),
           Row(
             children: [
@@ -381,20 +409,20 @@ class _BrowseFragmentState extends State<BrowseFragment> {
                       height: 46,
                     ),
                     DView.spaceWidth(12),
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '12,882',
+                            'Total',
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: Colors.black,
                             ),
                           ),
                           Text(
-                            'Total Worker',
+                            '$totalWorkers',
                             style: TextStyle(
                               color: Colors.black,
                             ),
@@ -414,20 +442,20 @@ class _BrowseFragmentState extends State<BrowseFragment> {
                       height: 46,
                     ),
                     DView.spaceWidth(12),
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '\$89,390',
+                            'Available ',
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: Colors.black,
                             ),
                           ),
                           Text(
-                            'Available',
+                            '$availableWorkers',
                             style: TextStyle(
                               color: Colors.black,
                             ),

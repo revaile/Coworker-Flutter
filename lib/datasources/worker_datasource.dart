@@ -99,4 +99,51 @@ class WorkerDatasource {
       return Left(message);
     }
   }
+  // total
+  static Future<Either<String, Map<String, int>>> fetchStats(
+  ) async {
+    try {
+      // Ambil total worker
+      final totalResponse = await Appwrite.databases.listDocuments(
+        databaseId: Appwrite.databaseId,
+        collectionId: Appwrite.collectionWorkers,
+      );
+
+      // Ambil available worker
+      final availableResponse = await Appwrite.databases.listDocuments(
+        databaseId: Appwrite.databaseId,
+        collectionId: Appwrite.collectionWorkers,
+        queries: [
+          Query.equal('status', 'Available'),
+        ],
+      );
+
+      AppLog.success(
+        body: {
+          'total': totalResponse.total,
+          'available': availableResponse.total,
+        }.toString(),
+        title: 'Worker - fetchStats',
+      );
+
+      return Right({
+        'total': totalResponse.total,
+        'available': availableResponse.total,
+      });
+    } catch (e) {
+      AppLog.error(
+        body: e.toString(),
+        title: 'Worker - fetchStats',
+      );
+
+      String defaulMessage = 'Terjadi suatu masalah';
+      String message = defaulMessage;
+
+      if (e is AppwriteException) {
+        message = e.message ?? defaulMessage;
+      }
+
+      return Left(message);
+    }
+  }
 }
