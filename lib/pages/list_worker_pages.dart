@@ -149,14 +149,16 @@ class _ListWorkerPageState extends State<ListWorkerPage> {
   Widget topRatedCategory() {
   return Obx(() {
     final status = listWorkerController.statusTopRated;
-    final topRated = listWorkerController.topRated;
+    final filtered = listWorkerController.filteredWorkers;
 
+    // Check if data is loading
     if (status == 'Loading') {
       return Center(child: CircularProgressIndicator());
     }
 
-    if (topRated.isEmpty) {
-      return Center(
+    // No filtered workers found
+    if (filtered.isEmpty) {
+      return const Center(
         child: Text(
           'No top-rated workers available.',
           style: TextStyle(color: Colors.grey),
@@ -174,9 +176,9 @@ class _ListWorkerPageState extends State<ListWorkerPage> {
           child: ListView.builder(
             physics: const BouncingScrollPhysics(),
             scrollDirection: Axis.horizontal,
-            itemCount: topRated.length,
+            itemCount: filtered.length, // Use filtered workers
             itemBuilder: (context, index) {
-              WorkerModel worker = topRated[index];
+              WorkerModel worker = filtered[index];
               return GestureDetector(
                 onTap: () {
                   Navigator.pushNamed(
@@ -193,15 +195,16 @@ class _ListWorkerPageState extends State<ListWorkerPage> {
                   ),
                   margin: EdgeInsets.only(
                     left: index == 0 ? 20 : 8,
-                    right: index == topRated.length - 1 ? 20 : 8,
+                    right: index == filtered.length - 1 ? 20 : 8,
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset(
-                        Appwrite.imageURL(worker.image),
+                      Image.network(
+                        Appwrite.imageURL(worker.image), 
                         width: 46,
                         height: 46,
+                        fit: BoxFit.cover,
                       ),
                       DView.spaceHeight(6),
                       Text(
@@ -241,6 +244,7 @@ class _ListWorkerPageState extends State<ListWorkerPage> {
     );
   });
 }
+
 
 
   Widget availableWorker() {
