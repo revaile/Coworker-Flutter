@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cowok/datasources/worker_datasource.dart';
 import 'package:cowok/models/worker_model.dart';
 import 'package:get/get.dart';
@@ -9,28 +11,14 @@ class ListWorkerController extends GetxController {
   }
 
   // Data pekerja dengan rating tinggi
-  final topRated = [
-    {
-      'image': 'assets/shian.png',
-      'name': 'Shian',
-      'rate': 4.8,
-    },
-    {
-      'image': 'assets/cindinan.png',
-      'name': 'Cindinan',
-      'rate': 4.9,
-    },
-    {
-      'image': 'assets/ajinomo.png',
-      'name': 'Ajinomo',
-      'rate': 4.8,
-    },
-    {
-      'image': 'assets/sajima.png',
-      'name': 'Sajima',
-      'rate': 4.8,
-    },
-  ];
+  final _topRated = <WorkerModel>[].obs;
+  List<WorkerModel> get topRated => _topRated;
+  set topRated(List<WorkerModel> workers) => _topRated.value = workers;
+
+  // Status for fetching top-rated workers
+  final _statusTopRated = ''.obs;
+  String get statusTopRated => _statusTopRated.value;
+  set statusTopRated(String status) => _statusTopRated.value = status;
 
   // Daftar pekerja yang tersedia
   final _availableWorkers = <WorkerModel>[].obs;
@@ -75,5 +63,20 @@ class ListWorkerController extends GetxController {
           .where((worker) => worker.name.toLowerCase().contains(query.toLowerCase()))
           .toList();
     }
+  }
+
+  // Fetch top-rated workers from the database
+  Future<void> fetchTopRatedWorkers() async {
+    statusTopRated = 'Loading';
+    final response = await WorkerDatasource.fetchTopRated();
+    response.fold(
+      (errorMessage) {
+        statusTopRated = errorMessage;
+      },
+      (workers) {
+        statusTopRated = 'Success';
+        topRated = workers;
+      },
+    );
   }
 }
