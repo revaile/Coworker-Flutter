@@ -88,31 +88,6 @@ class _SignInPageState extends State<SignInPage> {
                   hint: 'Write your password',
                 ),
                 DView.spaceHeight(30),
-                Row(
-                  children: [
-                    Container(
-                      height: 20,
-                      width: 20,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: const EdgeInsets.all(2),
-                      child: Material(
-                        borderRadius: BorderRadius.circular(6),
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                    DView.spaceWidth(8),
-                    const Text(
-                      'I agree with terms and conditions',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ],
-                ),
-                DView.spaceHeight(30),
                 // bungkus pake builder
                 // abistuu hapus semua nama buildr
                 Obx(

@@ -181,7 +181,7 @@ class _ListWorkerPageState extends State<ListWorkerPage> {
     if (filtered.isEmpty) {
       return const Center(
         child: Text(
-          'No top-rated workers available.',
+          'No High-rated workers available.',
           style: TextStyle(color: Colors.grey),
         ),
       );
@@ -197,7 +197,7 @@ class _ListWorkerPageState extends State<ListWorkerPage> {
           child: ListView.builder(
             physics: const BouncingScrollPhysics(),
             scrollDirection: Axis.horizontal,
-            itemCount: filtered.length, // Use filtered workers
+            itemCount: filtered.length,
             itemBuilder: (context, index) {
               WorkerModel worker = filtered[index];
               return GestureDetector(
@@ -265,8 +265,6 @@ class _ListWorkerPageState extends State<ListWorkerPage> {
     );
   });
 }
-
-
 
   Widget availableWorker() {
     return Column(

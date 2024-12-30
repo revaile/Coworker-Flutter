@@ -1,9 +1,15 @@
+import 'package:cowok/datasources/worker_datasource.dart';
+import 'package:cowok/models/worker_model.dart';
 import 'package:get/get.dart';
 
 class BrowseController extends GetxController {
   clear() {
     Get.delete<BrowseController>(force: true);
   }
+
+  final _sectionTitle = ''.obs;
+  String get sectionTitle => _sectionTitle.value;
+  set sectionTitle(String title) => _sectionTitle.value = title;
 
   List categories = [
     {
@@ -28,61 +34,30 @@ class BrowseController extends GetxController {
     },
   ];
 
-  List highRatedWorkers = [
-    {
-      'image': 'assets/shian.png',
-      'name': 'Shian',
-      'rate': 4.8,
-    },
-    {
-      'image': 'assets/cindinan.png',
-      'name': 'Cindinan',
-      'rate': 4.9,
-    },
-    {
-      'image': 'assets/ajinomo.png',
-      'name': 'Ajinomo',
-      'rate': 4.8,
-    },
-    {
-      'image': 'assets/sajima.png',
-      'name': 'Sajima',
-      'rate': 4.8,
-    },
-  ];
+  // Data pekerja dengan rating tinggi
+  final _topRated = <WorkerModel>[].obs;
+  List<WorkerModel> get topRated => _topRated;
+  set topRated(List<WorkerModel> workers) => _topRated.value = workers;
+  
+  // Status for fetching top-rated workers
+  final _statusTopRated = ''.obs;
+  String get statusTopRated => _statusTopRated.value;
+  set statusTopRated(String status) => _statusTopRated.value = status;
 
-  List newcomers = [
-    {
-      'image': 'assets/jundi.png',
-      'name': 'Jundi',
-      'job': 'Gardener',
-    },
-    {
-      'image': 'assets/mona.png',
-      'name': 'Mona',
-      'job': 'Chef',
-    },
-    {
-      'image': 'assets/sushi.png',
-      'name': 'Sushi',
-      'job': 'Tutor',
-    },
-    {
-      'image': 'assets/romi.png',
-      'name': 'Romi',
-      'job': 'Writer',
-    },
-    {
-      'image': 'assets/lona.png',
-      'name': 'Lona',
-      'job': 'Cleaner',
-    },
-    {
-      'image': 'assets/daren.png',
-      'name': 'Daren',
-      'job': 'Security',
-    },
-  ];
+  // Data pekerja baru
+  final _newcomers = <WorkerModel>[].obs;
+  List<WorkerModel> get newcomers => _newcomers;
+  set newcomers(List<WorkerModel> workers) => _newcomers.value = workers;
+
+  // Status for fetching newcomers workers
+  final _statusNewcomers = ''.obs;
+  String get statusNewcomers => _statusNewcomers.value;
+  set statusNewcomers(String status) => _statusNewcomers.value = status;
+
+  // Daftar pekerja yang difilter berdasarkan pencarian
+  final _filteredWorkers = <WorkerModel>[].obs;
+  List<WorkerModel> get filteredWorkers => _filteredWorkers;
+  set filteredWorkers(List<WorkerModel> n) => _filteredWorkers.value = n;
 
   List curatedTips = [
     {
@@ -111,42 +86,58 @@ class BrowseController extends GetxController {
     },
   ];
 
-  var searchResults = [].obs;
+  // Fungsi untuk melakukan pencarian pekerja berdasarkan nama
+  searchWorker(String query) {
+  if (query.isEmpty) {
+    // If search query is empty, show all workers in both categories
+    filteredWorkers = [];
+    sectionTitle = '';  // Empty title, no search results
+  } else {
+    // Filter workers based on the search query
+    var filteredTopRated = topRated
+        .where((worker) => worker.name.toLowerCase().contains(query.toLowerCase()))
+        .toList();
 
-  void search(String query) {
-    if (query.isEmpty) {
-      searchResults.clear();
-      return;
-    }
+    var filteredNewcomers = newcomers
+        .where((worker) => worker.name.toLowerCase().contains(query.toLowerCase()))
+        .toList();
 
-    query = query.toLowerCase();
+    // If there's a query, only show filtered workers in a single section
+    filteredWorkers = [...filteredTopRated, ...filteredNewcomers];
+    sectionTitle = 'Search Results'; // Title for search results
+  }
+  update();  // Refresh the UI
+}
 
-    // Cari di highRatedWorkers
-    var highRatedResults = highRatedWorkers.where((worker) {
-      var name = worker['name']?.toString().toLowerCase() ?? '';
-      return name.contains(query);
-    }).toList();
 
-    // Cari di newcomers
-    var newcomersResults = newcomers.where((newcomer) {
-      var name = newcomer['name']?.toString().toLowerCase() ?? '';
-      var job = newcomer['job']?.toString().toLowerCase() ?? '';
-      return name.contains(query) || job.contains(query);
-    }).toList();
 
-    // Tentukan hasil akhir
-    if (highRatedResults.isNotEmpty) {
-      searchResults.assignAll(highRatedResults);
-    } else if (newcomersResults.isNotEmpty) {
-      searchResults.assignAll(newcomersResults);
-    } else {
-      // Tidak ada hasil, tambahkan pesan "Not Found"
-      searchResults.assignAll([
-        {
-          'message': 'Not Found',
-          'description': 'No matches found for your query'
-        }
-      ]);
-    }
+  // Fetch top-rated workers from the database
+  Future<void> fetchTopRatedWorkers() async {
+    statusTopRated = 'Loading';
+    final response = await WorkerDatasource.fetchTopRated();
+    response.fold(
+      (errorMessage) {
+        statusTopRated = errorMessage;
+      },
+      (workers) {
+        statusTopRated = 'Success';
+        topRated = workers;
+      },
+    );
+  }
+
+  // Fetch top-rated workers from the database
+  Future<void> fetchNewcomerWorkers() async {
+    statusTopRated = 'Loading';
+    final response = await WorkerDatasource.fetchNewcomers();
+    response.fold(
+      (errorMessage) {
+        statusNewcomers = errorMessage;
+      },
+      (workers) {
+        statusNewcomers = 'Success';
+        newcomers  = workers;
+      },
+    );
   }
 }
