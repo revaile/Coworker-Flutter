@@ -160,7 +160,7 @@ class _ListWorkerPageState extends State<ListWorkerPage> {
     if (filtered.isEmpty) {
       return const Center(
         child: Text(
-          'No top-rated workers available.',
+          'No High-rated workers available.',
           style: TextStyle(color: Colors.grey),
         ),
       );

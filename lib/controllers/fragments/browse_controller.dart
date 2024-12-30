@@ -1,3 +1,5 @@
+import 'package:cowok/datasources/worker_datasource.dart';
+import 'package:cowok/models/worker_model.dart';
 import 'package:get/get.dart';
 
 class BrowseController extends GetxController {
@@ -28,61 +30,25 @@ class BrowseController extends GetxController {
     },
   ];
 
-  List highRatedWorkers = [
-    {
-      'image': 'assets/shian.png',
-      'name': 'Shian',
-      'rate': 4.8,
-    },
-    {
-      'image': 'assets/cindinan.png',
-      'name': 'Cindinan',
-      'rate': 4.9,
-    },
-    {
-      'image': 'assets/ajinomo.png',
-      'name': 'Ajinomo',
-      'rate': 4.8,
-    },
-    {
-      'image': 'assets/sajima.png',
-      'name': 'Sajima',
-      'rate': 4.8,
-    },
-  ];
+  // Data pekerja dengan rating tinggi
+  final _topRated = <WorkerModel>[].obs;
+  List<WorkerModel> get topRated => _topRated;
+  set topRated(List<WorkerModel> workers) => _topRated.value = workers;
+  
+  // Status for fetching top-rated workers
+  final _statusTopRated = ''.obs;
+  String get statusTopRated => _statusTopRated.value;
+  set statusTopRated(String status) => _statusTopRated.value = status;
 
-  List newcomers = [
-    {
-      'image': 'assets/jundi.png',
-      'name': 'Jundi',
-      'job': 'Gardener',
-    },
-    {
-      'image': 'assets/mona.png',
-      'name': 'Mona',
-      'job': 'Chef',
-    },
-    {
-      'image': 'assets/sushi.png',
-      'name': 'Sushi',
-      'job': 'Tutor',
-    },
-    {
-      'image': 'assets/romi.png',
-      'name': 'Romi',
-      'job': 'Writer',
-    },
-    {
-      'image': 'assets/lona.png',
-      'name': 'Lona',
-      'job': 'Cleaner',
-    },
-    {
-      'image': 'assets/daren.png',
-      'name': 'Daren',
-      'job': 'Security',
-    },
-  ];
+  // Data pekerja baru
+  final _newcomers = <WorkerModel>[].obs;
+  List<WorkerModel> get newcomers => _newcomers;
+  set newComers(List<WorkerModel> workers) => _newcomers.value = workers;
+
+  // Daftar pekerja yang difilter berdasarkan pencarian
+  final _filteredWorkers = <WorkerModel>[].obs;
+  List<WorkerModel> get filteredWorkers => _filteredWorkers;
+  set filteredWorkers(List<WorkerModel> n) => _filteredWorkers.value = n;
 
   List curatedTips = [
     {
@@ -111,42 +77,46 @@ class BrowseController extends GetxController {
     },
   ];
 
-  var searchResults = [].obs;
-
-  void search(String query) {
+  // Fungsi untuk melakukan pencarian pekerja berdasarkan nama
+  searchWorker(String query) {
     if (query.isEmpty) {
-      searchResults.clear();
-      return;
-    }
-
-    query = query.toLowerCase();
-
-    // Cari di highRatedWorkers
-    var highRatedResults = highRatedWorkers.where((worker) {
-      var name = worker['name']?.toString().toLowerCase() ?? '';
-      return name.contains(query);
-    }).toList();
-
-    // Cari di newcomers
-    var newcomersResults = newcomers.where((newcomer) {
-      var name = newcomer['name']?.toString().toLowerCase() ?? '';
-      var job = newcomer['job']?.toString().toLowerCase() ?? '';
-      return name.contains(query) || job.contains(query);
-    }).toList();
-
-    // Tentukan hasil akhir
-    if (highRatedResults.isNotEmpty) {
-      searchResults.assignAll(highRatedResults);
-    } else if (newcomersResults.isNotEmpty) {
-      searchResults.assignAll(newcomersResults);
+      // Jika pencarian kosong, tampilkan semua pekerja
+      filteredWorkers = topRated;
     } else {
-      // Tidak ada hasil, tambahkan pesan "Not Found"
-      searchResults.assignAll([
-        {
-          'message': 'Not Found',
-          'description': 'No matches found for your query'
-        }
-      ]);
+      // Filter pekerja berdasarkan nama yang mengandung teks pencarian
+      filteredWorkers = topRated
+          .where((worker) => worker.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
     }
+  }
+
+  // Fetch top-rated workers from the database
+  Future<void> fetchTopRatedWorkers() async {
+    statusTopRated = 'Loading';
+    final response = await WorkerDatasource.fetchTopRated();
+    response.fold(
+      (errorMessage) {
+        statusTopRated = errorMessage;
+      },
+      (workers) {
+        statusTopRated = 'Success';
+        topRated = workers;
+      },
+    );
+  }
+
+  // Fetch top-rated workers from the database
+  Future<void> fetchNewcomerWorkers() async {
+    statusTopRated = 'Loading';
+    final response = await WorkerDatasource.fetchNewcomers();
+    response.fold(
+      (errorMessage) {
+        statusTopRated = errorMessage;
+      },
+      (workers) {
+        statusTopRated = 'Success';
+        topRated = workers;
+      },
+    );
   }
 }

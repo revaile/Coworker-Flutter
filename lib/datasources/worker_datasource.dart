@@ -146,4 +146,55 @@ class WorkerDatasource {
       return Left(message);
     }
   }
+  
+  // Fetch newcomers
+  static Future<Either<String, List<WorkerModel>>> fetchNewcomers() async {
+    try {
+      // Get the current date-time and calculate 7 days ago
+      final now = DateTime.now();
+      final oneWeekAgo = now.subtract(const Duration(days: 7)).toIso8601String();
+
+      // Query workers added after oneWeekAgo
+      final response = await Appwrite.databases.listDocuments(
+        databaseId: Appwrite.databaseId,
+        collectionId: Appwrite.collectionWorkers,
+        queries: [
+          Query.greaterThanEqual('\$createdAt', oneWeekAgo),
+        ],
+      );
+
+      if (response.total < 1) {
+        AppLog.error(
+          body: 'No newcomers found',
+          title: 'Worker - fetchNewcomers',
+        );
+        return const Left('No newcomers found');
+      }
+
+      AppLog.success(
+        body: response.toMap().toString(),
+        title: 'Worker - fetchNewcomers',
+      );
+
+      List<WorkerModel> workers = response.documents.map((e) {
+        return WorkerModel.fromJson(e.data);
+      }).toList();
+
+      return Right(workers);
+    } catch (e) {
+      AppLog.error(
+        body: e.toString(),
+        title: 'Worker - fetchNewcomers',
+      );
+
+      String defaulMessage = 'An error occurred';
+      String message = defaulMessage;
+
+      if (e is AppwriteException) {
+        message = e.message ?? defaulMessage;
+      }
+
+      return Left(message);
+    }
+  }
 }

@@ -1,7 +1,9 @@
+import 'package:cowok/config/appwrite.dart';
 import 'package:cowok/config/enum.dart';
 import 'package:cowok/controllers/fragments/browse_controller.dart';
 import 'package:cowok/controllers/user_controller.dart';
 import 'package:cowok/datasources/worker_datasource.dart';
+import 'package:cowok/models/worker_model.dart';
 import 'package:cowok/widgets/section_title.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +19,7 @@ class BrowseFragment extends StatefulWidget {
 class _BrowseFragmentState extends State<BrowseFragment> {
   final browseController = Get.put(BrowseController());
   final userController = Get.put(UserController());
+  final TextEditingController searchController = TextEditingController();
 
   int totalWorkers = 0;
   int availableWorkers = 0;
@@ -24,8 +27,16 @@ class _BrowseFragmentState extends State<BrowseFragment> {
 
   @override
   void initState() {
+    browseController.fetchTopRatedWorkers();
+    browseController.fetchNewcomerWorkers();
     super.initState();
-    fetchStats();
+  }
+
+  @override
+  void dispose() {
+    browseController.clear();
+    searchController.dispose();
+    super.dispose();
   }
 
   Future<void> fetchStats() async {
@@ -45,13 +56,9 @@ class _BrowseFragmentState extends State<BrowseFragment> {
     );
   }
 
-  @override
-  void dispose() {
-    browseController.clear();
-    super.dispose();
+  void onSearch(String query) {
+    browseController.searchWorker(query); // Panggil fungsi pencarian
   }
-
-  // finish
 
   @override
   Widget build(BuildContext context) {
@@ -194,14 +201,10 @@ class _BrowseFragmentState extends State<BrowseFragment> {
 
   Widget newcomers() {
     return Obx(() {
-      // Jika searchResults ada dan bukan bagian dari newcomers, kosongkan
-      final newcomers = browseController.searchResults.isNotEmpty
-          ? browseController.searchResults
-              .where((item) => item['job'] != null) // Hanya untuk newcomers
-              .toList()
-          : browseController.newcomers;
+      final newcomersList = browseController.newcomers;
+      final filtered = browseController.filteredWorkers;
 
-      if (newcomers.isEmpty) {
+      if (newcomersList.isEmpty) {
         return const Center(
           child: Text(
             'No newcomers found.',
@@ -225,9 +228,9 @@ class _BrowseFragmentState extends State<BrowseFragment> {
             ),
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: newcomers.length,
+            itemCount: filtered.length,
             itemBuilder: (context, index) {
-              Map item = newcomers[index];
+              WorkerModel worker = filtered[index];
               return Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
@@ -238,8 +241,7 @@ class _BrowseFragmentState extends State<BrowseFragment> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
-                      item['image'] ??
-                          'assets/placeholder.png', // Placeholder jika null
+                      Appwrite.imageURL(worker.image) ?? 'assets/placeholder.png',
                       width: 46,
                       height: 46,
                     ),
@@ -250,39 +252,36 @@ class _BrowseFragmentState extends State<BrowseFragment> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            item['name'] ?? 'Unknown', // Default jika null
+                            worker.name,
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: Colors.black,
                             ),
                           ),
-                          if (item.containsKey('job')) // Tampilkan job jika ada
                             Text(
-                              item['job'] ?? 'Unknown', // Default jika null
+                              worker.category,
                               style: const TextStyle(
                                 color: Colors.grey,
                               ),
                             ),
-                          if (item
-                              .containsKey('rate')) // Tampilkan rate jika ada
                             Row(
                               children: [
-                                Image.asset(
+                                Image.network(
                                   'assets/ic_star_small.png',
                                   height: 16,
                                   width: 16,
                                 ),
                                 DView.spaceWidth(2),
                                 Text(
-                                  '${item['rate'] ?? 0.0}',
+                                  '${worker.hourRate}',
                                   style: const TextStyle(color: Colors.black),
                                 ),
                               ],
                             ),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               );
@@ -295,18 +294,13 @@ class _BrowseFragmentState extends State<BrowseFragment> {
 
   Widget highRatedWorkers() {
     return Obx(() {
-      // Jika searchResults ada dan bukan bagian dari highRatedWorkers, kosongkan
-      final workers = browseController.searchResults.isNotEmpty
-          ? browseController.searchResults
-              .where((item) =>
-                  item['rate'] != null) // Hanya untuk highRatedWorkers
-              .toList()
-          : browseController.highRatedWorkers;
+      final highRatedWorkers = browseController.topRated;
+      final filtered = browseController.filteredWorkers;
 
-      if (workers.isEmpty) {
+      if (highRatedWorkers.isEmpty) {
         return const Center(
           child: Text(
-            'No high-rated workers found.',
+            'No High-rated workers found.',
             style: TextStyle(color: Colors.grey, fontSize: 16),
           ),
         );
@@ -322,39 +316,46 @@ class _BrowseFragmentState extends State<BrowseFragment> {
             child: ListView.builder(
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.horizontal,
-              itemCount: workers.length,
+              itemCount: filtered.length,
               itemBuilder: (context, index) {
-                Map worker = workers[index];
-                return Container(
-                  width: 100,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: const Color(0xffeaeaea)),
-                  ),
-                  margin: EdgeInsets.only(
-                    left: index == 0 ? 20 : 8,
-                    right: index == workers.length - 1 ? 20 : 8,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        worker['image'] ??
-                            'assets/placeholder.png', // Placeholder jika null
-                        width: 46,
-                        height: 46,
-                      ),
-                      DView.spaceHeight(6),
-                      Text(
-                        worker['name'] ?? 'Unknown', // Default jika null
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
+                WorkerModel worker = filtered[index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      AppRoute.workerProfile.name,
+                      arguments: worker,
+                    );
+                  },
+                  child: Container(
+                    width: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: const Color(0xffeaeaea)),
+                    ),
+                    margin: EdgeInsets.only(
+                      left: index == 0 ? 20 : 8,
+                      right: index == filtered.length - 1 ? 20 : 8,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.network(
+                          Appwrite.imageURL(worker.image),
+                          width: 46,
+                          height: 46,
+                          fit: BoxFit.cover,
                         ),
-                      ),
-                      DView.spaceHeight(4),
-                      if (worker.containsKey('rate')) // Tampilkan rate jika ada
+                        DView.spaceHeight(6),
+                        Text(
+                          worker.name,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                        DView.spaceHeight(4),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -365,21 +366,15 @@ class _BrowseFragmentState extends State<BrowseFragment> {
                             ),
                             DView.spaceWidth(2),
                             Text(
-                              '${worker['rate'] ?? 0.0}',
+                              '${worker.rating}',
                               style: const TextStyle(
                                 color: Colors.black,
                               ),
                             ),
                           ],
                         ),
-                      if (worker.containsKey('job')) // Tampilkan job jika ada
-                        Text(
-                          worker['job'] ?? 'Unknown', // Default jika null
-                          style: const TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },
@@ -494,9 +489,8 @@ class _BrowseFragmentState extends State<BrowseFragment> {
         children: [
           Expanded(
             child: TextField(
-              onChanged: (value) {
-                browseController.search(value);
-              },
+              controller: searchController,
+              onChanged: onSearch,
               decoration: const InputDecoration(
                 hintText: 'Search your dream worker',
                 hintStyle: TextStyle(
@@ -516,9 +510,7 @@ class _BrowseFragmentState extends State<BrowseFragment> {
             ),
           ),
           IconButton(
-            onPressed: () {
-              browseController.search('');
-            },
+            onPressed: () => onSearch(searchController.text),
             icon: const ImageIcon(
               AssetImage(
                 'assets/ic_search.png',
