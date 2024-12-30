@@ -13,6 +13,7 @@ import 'package:cowok/pages/get_started_pages.dart';
 import 'package:cowok/pages/health_pages.dart';
 import 'package:cowok/pages/list_worker_pages.dart';
 import 'package:cowok/pages/productivity_page.dart';
+import 'package:cowok/pages/rating_page.dart';
 import 'package:cowok/pages/sign_in_page.dart';
 import 'package:cowok/pages/sign_up_page.dart';
 import 'package:cowok/pages/splash_screen_page.dart';
@@ -98,6 +99,7 @@ class MyApp extends StatelessWidget {
         '/tipsSelection': (context) => const ProductivityPage(),
         '/scaleUpTips': (context) => const BusinesPages(),
         '/cleanerSelection': (context) => const HealthPages(),
+        '/rating': (context) => const RatingPage(),
         '/': (context) => const SplashScreenPage(),
       },
     );

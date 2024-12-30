@@ -277,16 +277,12 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
       padding: const EdgeInsets.all(20),
       child: Row(
         children: [
-          Expanded(
-            child: SecondaryButton(
-              onPressed: () {},
-              child: const Text('Message'),
-            ),
-          ),
           DView.spaceWidth(),
           Expanded(
             child: FilledButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, '/rating');
+              },
               child: const Text('Give Rating'),
             ),
           ),
