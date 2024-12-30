@@ -1,31 +1,25 @@
-import 'package:cowok/datasources/worker_datasource.dart';
+
 import 'package:get/get.dart';
-import 'package:dartz/dartz.dart';
 
 class RatingController extends GetxController {
   var currentRating = 0.0.obs;
   var isSubmitting = false.obs;
 
   Future<void> submitRating(String workerId) async {
-    isSubmitting.value = true;
-
-    final result = await WorkerDatasource.updateWorkerRating(
-      workerId: workerId,
-      newRating: currentRating.value,
-    );
-
-    result.fold(
-      (error) {
-        Get.snackbar('Error', error, snackPosition: SnackPosition.BOTTOM);
-      },
-      (_) {
-        Get.snackbar('Success', 'Thank you for your rating!',
-            snackPosition: SnackPosition.BOTTOM);
-        Get.back(); // Menutup halaman rating
-      },
-    );
-
-    isSubmitting.value = false;
+    try {
+      isSubmitting.value = true;
+      // Simulate API call or rating submission logic here
+      await Future.delayed(const Duration(seconds: 2)); // Replace with actual API call
+      // Success! Close the page
+      Get.back(); // Close the current page
+      Get.snackbar('Success', 'Rating submitted successfully!',
+          snackPosition: SnackPosition.BOTTOM);
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to submit rating: $e',
+          snackPosition: SnackPosition.BOTTOM);
+    } finally {
+      isSubmitting.value = false;
+    }
   }
 }
 

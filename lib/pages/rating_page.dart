@@ -8,6 +8,7 @@ class RatingPage extends StatelessWidget {
   final RatingController controller = Get.put(RatingController());
 
   RatingPage({super.key, required this.workerId});
+  
 
   @override
   Widget build(BuildContext context) {
