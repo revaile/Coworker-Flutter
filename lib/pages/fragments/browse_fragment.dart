@@ -80,236 +80,251 @@ class _BrowseFragmentState extends State<BrowseFragment> {
   }
 
   Widget curatedTips() {
-    return Obx(() {
-      final tips = browseController.searchResults.isNotEmpty
-          ? browseController.searchResults
-          : browseController.curatedTips;
-
-      if (tips.isEmpty) {
-        return const SizedBox.shrink(); // Widget kosong
-      }
-
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SectionTitle(text: 'Curated Tips'),
-            Column(
-              children: tips.map((item) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, item['route'] ?? '/');
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 16),
-                    child: Row(
-                      children: [
-                        Stack(
-                          children: [
-                            Image.asset(
-                              item['image'] ?? 'assets/placeholder.png',
-                              width: 70,
-                              height: 70,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SectionTitle(text: 'Curated Tips'),
+          Column(
+            children: browseController.curatedTips.map((item) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, item['route'] ?? '/');
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Row(
+                    children: [
+                      Stack(
+                        children: [
+                          Image.asset(
+                            item['image'] ?? 'assets/placeholder.png',
+                            width: 70,
+                            height: 70,
+                          ),
+                          if (item['is_popular'] ?? false)
+                            Positioned(
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  color: Color(0xffBFA8FF),
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(16),
+                                    bottomRight: Radius.circular(16),
+                                  ),
+                                ),
+                                height: 24,
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  'Popular',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500,
+                                    height: 1,
+                                  ),
+                                ),
+                              ),
                             ),
-                            if (item['is_popular'] ?? false)
-                              Positioned(
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                child: Container(
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xffBFA8FF),
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(16),
-                                      bottomRight: Radius.circular(16),
-                                    ),
-                                  ),
-                                  height: 24,
-                                  alignment: Alignment.center,
-                                  child: const Text(
-                                    'Popular',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w500,
-                                      height: 1,
-                                    ),
-                                  ),
-                                ),
+                        ],
+                      ),
+                      DView.spaceWidth(),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (item['name'] != null)
+                            Text(
+                              item['name']!,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
                               ),
-                          ],
-                        ),
-                        DView.spaceWidth(),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (item['name'] != null)
-                              Text(
-                                item['name']!,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black,
-                                ),
+                            ),
+                          if (item['category'] != null)
+                            Text(
+                              item['category']!,
+                              style: const TextStyle(
+                                color: Colors.grey,
                               ),
-                            if (item['category'] != null)
-                              Text(
-                                item['category']!,
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                ),
-                              ),
-                          ],
-                        ),
-                      ],
-                    ),
+                            ),
+                        ],
+                      ),
+                    ],
                   ),
-                );
-              }).toList(),
-            ),
-          ],
-        ),
-      );
-    });
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget newcomers() {
-    return Obx(() {
-      final newcomers = browseController.searchResults.isNotEmpty
-          ? browseController.searchResults
-          : browseController.newcomers;
+  return Obx(() {
+   // Jika searchResults ada dan bukan bagian dari newcomers, kosongkan
+    final newcomers = browseController.searchResults.isNotEmpty
+        ? browseController.searchResults
+            .where((item) => item['job'] != null) // Hanya untuk newcomers
+            .toList()
+        : browseController.newcomers;
 
-      if (newcomers.isEmpty) {
-        return const Center(
-          child: Text(
-            'No newcomers found.',
-            style: TextStyle(color: Colors.grey, fontSize: 16),
+    if (newcomers.isEmpty) {
+      return const Center(
+        child: Text(
+          'No newcomers found.',
+          style: TextStyle(color: Colors.grey, fontSize: 16),
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SectionTitle(text: 'Newcomers', autoPadding: true),
+        DView.spaceHeight(),
+        GridView.builder(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisExtent: 74,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
           ),
-        );
-      }
-
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SectionTitle(text: 'Newcomers', autoPadding: true),
-          DView.spaceHeight(),
-          GridView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisExtent: 74,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-            ),
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: newcomers.length,
-            itemBuilder: (context, index) {
-              Map item = newcomers[index];
-              return Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xffeaeaea)),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      item['image'],
-                      width: 46,
-                      height: 46,
-                    ),
-                    DView.spaceWidth(12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            item['name'],
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
-                            ),
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: newcomers.length,
+          itemBuilder: (context, index) {
+            Map item = newcomers[index];
+            return Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: const Color(0xffeaeaea)),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    item['image'] ?? 'assets/placeholder.png', // Placeholder jika null
+                    width: 46,
+                    height: 46,
+                  ),
+                  DView.spaceWidth(12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          item['name'] ?? 'Unknown', // Default jika null
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
                           ),
+                        ),
+                        if (item.containsKey('job')) // Tampilkan job jika ada
                           Text(
-                            item['job'],
+                            item['job'] ?? 'Unknown', // Default jika null
                             style: const TextStyle(
                               color: Colors.grey,
                             ),
                           ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
+                        if (item.containsKey('rate')) // Tampilkan rate jika ada
+                          Row(
+                            children: [
+                              Image.asset(
+                                'assets/ic_star_small.png',
+                                height: 16,
+                                width: 16,
+                              ),
+                              DView.spaceWidth(2),
+                              Text(
+                                '${item['rate'] ?? 0.0}',
+                                style: const TextStyle(color: Colors.black),
+                              ),
+                            ],
+                          ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  });
+}
+
+
+
+ Widget highRatedWorkers() {
+  return Obx(() {
+    // Jika searchResults ada dan bukan bagian dari highRatedWorkers, kosongkan
+    final workers = browseController.searchResults.isNotEmpty
+        ? browseController.searchResults
+            .where((item) => item['rate'] != null) // Hanya untuk highRatedWorkers
+            .toList()
+        : browseController.highRatedWorkers;
+
+    if (workers.isEmpty) {
+      return const Center(
+        child: Text(
+          'No high-rated workers found.',
+          style: TextStyle(color: Colors.grey, fontSize: 16),
+        ),
       );
-    });
-  }
+    }
 
-  Widget highRatedWorkers() {
-    return Obx(() {
-      final workers = browseController.searchResults.isNotEmpty
-          ? browseController.searchResults
-          : browseController.highRatedWorkers;
-
-      if (workers.isEmpty) {
-        return const Center(
-          child: Text(
-            'No high-rated workers found.',
-            style: TextStyle(color: Colors.grey, fontSize: 16),
-          ),
-        );
-      }
-
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SectionTitle(text: 'High Rated Workers', autoPadding: true),
-          DView.spaceHeight(),
-          SizedBox(
-            height: 120,
-            child: ListView.builder(
-              physics: const BouncingScrollPhysics(),
-              scrollDirection: Axis.horizontal,
-              itemCount: workers.length,
-              itemBuilder: (context, index) {
-                Map worker = workers[index];
-                return Container(
-                  width: 100,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: const Color(0xffeaeaea)),
-                  ),
-                  margin: EdgeInsets.only(
-                    left: index == 0 ? 20 : 8,
-                    right: index == workers.length - 1 ? 20 : 8,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        worker['image'],
-                        width: 46,
-                        height: 46,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SectionTitle(text: 'High Rated Workers', autoPadding: true),
+        DView.spaceHeight(),
+        SizedBox(
+          height: 120,
+          child: ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            scrollDirection: Axis.horizontal,
+            itemCount: workers.length,
+            itemBuilder: (context, index) {
+              Map worker = workers[index];
+              return Container(
+                width: 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: const Color(0xffeaeaea)),
+                ),
+                margin: EdgeInsets.only(
+                  left: index == 0 ? 20 : 8,
+                  right: index == workers.length - 1 ? 20 : 8,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      worker['image'] ?? 'assets/placeholder.png', // Placeholder jika null
+                      width: 46,
+                      height: 46,
+                    ),
+                    DView.spaceHeight(6),
+                    Text(
+                      worker['name'] ?? 'Unknown', // Default jika null
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
                       ),
-                      DView.spaceHeight(6),
-                      Text(
-                        worker['name'],
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
-                      ),
-                      DView.spaceHeight(4),
+                    ),
+                    DView.spaceHeight(4),
+                    if (worker.containsKey('rate')) // Tampilkan rate jika ada
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -320,23 +335,30 @@ class _BrowseFragmentState extends State<BrowseFragment> {
                           ),
                           DView.spaceWidth(2),
                           Text(
-                            '${worker['rate']}',
+                            '${worker['rate'] ?? 0.0}',
                             style: const TextStyle(
                               color: Colors.black,
                             ),
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                );
-              },
-            ),
+                    if (worker.containsKey('job')) // Tampilkan job jika ada
+                      Text(
+                        worker['job'] ?? 'Unknown', // Default jika null
+                        style: const TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                  ],
+                ),
+              );
+            },
           ),
-        ],
-      );
-    });
-  }
+        ),
+      ],
+    );
+  });
+}
 
   Widget latestStats() {
     return Padding(

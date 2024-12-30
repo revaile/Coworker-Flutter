@@ -92,7 +92,6 @@ class BrowseController extends GetxController {
       'is_popular': false,
       'url': 'https://www.google.com/search?q=12+Tips+Seleksi+Pekerja',
       'route': '/tipsSelection',
-
     },
     {
       'image': 'assets/news3.png',
@@ -101,7 +100,6 @@ class BrowseController extends GetxController {
       'is_popular': true,
       'url': 'https://www.google.com/search?q=Kapan+Harus+Scale+Up',
       'route': '/scaleUpTips',
-
     },
     {
       'image': 'assets/news2.png',
@@ -110,26 +108,43 @@ class BrowseController extends GetxController {
       'is_popular': false,
       'url': 'https://www.google.com/search?q=Pemilihan+Alat+Cleaner',
       'route': '/cleanerSelection',
-
     },
   ];
 
-  var searchResults = [].obs;
+var searchResults = [].obs;
 
-  void search(String query) {
-    if (query.isEmpty) {
-      searchResults.clear();
-      return;
-    }
 
-    query = query.toLowerCase();
-
-    var results = [
-      ...highRatedWorkers.where((worker) => worker['name'].toLowerCase().contains(query)),
-      ...newcomers.where((newcomer) => newcomer['name'].toLowerCase().contains(query) || newcomer['job'].toLowerCase().contains(query)),
-      ...curatedTips.where((tip) => tip['name'].toLowerCase().contains(query) || tip['category'].toLowerCase().contains(query)),
-    ];
-
-    searchResults.assignAll(results);
+void search(String query) {
+  if (query.isEmpty) {
+    searchResults.clear();
+    return;
   }
+
+  query = query.toLowerCase();
+
+  // Cari di highRatedWorkers
+  var highRatedResults = highRatedWorkers.where((worker) {
+    var name = worker['name']?.toString().toLowerCase() ?? '';
+    return name.contains(query);
+  }).toList();
+
+  // Cari di newcomers
+  var newcomersResults = newcomers.where((newcomer) {
+    var name = newcomer['name']?.toString().toLowerCase() ?? '';
+    var job = newcomer['job']?.toString().toLowerCase() ?? '';
+    return name.contains(query) || job.contains(query);
+  }).toList();
+
+  // Tentukan hasil akhir
+  if (highRatedResults.isNotEmpty) {
+    searchResults.assignAll(highRatedResults);
+  } else if (newcomersResults.isNotEmpty) {
+    searchResults.assignAll(newcomersResults);
+  } else {
+    searchResults.clear(); // Tidak ada hasil
+  }
+}
+
+
+
 }
