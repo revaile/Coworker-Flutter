@@ -139,13 +139,7 @@ class _SettingsFragmentState extends State<SettingsFragment> {
             onTap: () {
               Navigator.pushNamed(context, AppRoute.orderPage.name);
             },
-            child: itemSetting('assets/ic_invoice.png', 'History')),
-        itemDivider(),
-        itemSetting('assets/ic_payment_setting.png', 'Payments'),
-        itemDivider(),
-        itemSetting('assets/ic_notification_setting.png', 'Notification'),
-        itemDivider(),
-        itemSetting('assets/ic_rate_app.png', 'Rate App'),
+            child: itemSetting('assets/ic_rate_app.png', 'Rate App')),
         itemDivider(),
         itemSetting('assets/ic_sign_out.png', 'Sign Out', onTap: logout),
       ],
