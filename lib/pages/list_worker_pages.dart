@@ -21,6 +21,7 @@ class ListWorkerPage extends StatefulWidget {
 
 class _ListWorkerPageState extends State<ListWorkerPage> {
   final listWorkerController = Get.put(ListWorkerController());
+  final TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -31,7 +32,12 @@ class _ListWorkerPageState extends State<ListWorkerPage> {
   @override
   void dispose() {
     listWorkerController.clear();
+    searchController.dispose(); // Jangan lupa dispose controller
     super.dispose();
+  }
+
+  void onSearch(String query) {
+    listWorkerController.searchWorker(query); // Panggil fungsi pencarian
   }
 
   @override
@@ -104,9 +110,11 @@ class _ListWorkerPageState extends State<ListWorkerPage> {
       padding: const EdgeInsets.only(left: 20, right: 8),
       child: Row(
         children: [
-          const Expanded(
+          Expanded(
             child: TextField(
-              decoration: InputDecoration(
+              controller: searchController,
+              onChanged: onSearch, // Panggil fungsi saat teks berubah
+              decoration: const InputDecoration(
                 hintText: 'Search by name',
                 hintStyle: TextStyle(
                   color: Color(0xffA7A8B3),
@@ -117,7 +125,7 @@ class _ListWorkerPageState extends State<ListWorkerPage> {
                 contentPadding: EdgeInsets.all(0),
                 isDense: true,
               ),
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.black,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -125,7 +133,7 @@ class _ListWorkerPageState extends State<ListWorkerPage> {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () => onSearch(searchController.text),
             icon: const ImageIcon(
               AssetImage(
                 'assets/ic_search.png',
@@ -219,7 +227,7 @@ class _ListWorkerPageState extends State<ListWorkerPage> {
           if (statusFetch == '') return DView.nothing();
           if (statusFetch == 'Loading') return DView.loadingCircle();
           // if (statusFetch != 'Success') return DView.error(statusFetch);
-          List<WorkerModel> list = listWorkerController.availableWorkers;
+        List<WorkerModel> list = listWorkerController.filteredWorkers; // Menggunakan filteredWorkers
           return ListView.builder(
             itemCount: list.length,
             shrinkWrap: true,
