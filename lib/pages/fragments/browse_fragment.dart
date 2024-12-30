@@ -490,7 +490,36 @@ class _BrowseFragmentState extends State<BrowseFragment> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment:
+                  CrossAxisAlignment.start, // Aligns the content to the start
+              children: [
+                Obx(() {
+                  return Text(
+                    'Hi, ${userController.data.name ?? ''}',
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black,
+                    ),
+                  );
+                }),
+                const SizedBox(
+                    height: 4), // Add space between the name and title
+                const Text(
+                  'Recruiter',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          DView.spaceWidth(12), // Adds a small horizontal space between widgets
           GestureDetector(
             onTap: () =>
                 Navigator.pushNamed(context, AppRoute.editProfile.name),
@@ -516,31 +545,6 @@ class _BrowseFragmentState extends State<BrowseFragment> {
                   ),
                 );
               }),
-            ),
-          ),
-          DView.spaceWidth(12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Obx(() {
-                  return Text(
-                    'Hi, ${userController.data.name ?? ''}',
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
-                    ),
-                  );
-                }),
-                const Text(
-                  'Recruiter',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
             ),
           ),
         ],
