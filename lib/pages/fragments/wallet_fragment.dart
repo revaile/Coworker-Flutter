@@ -88,52 +88,55 @@ class _WalletFragmentState extends State<WalletFragment> {
   }
 
   Widget walletBox() {
-    return Stack(
-      children: [
-        Image.asset(
-          'assets/bg_card.png',
-        ),
-        Positioned(
-          left: 60,
-          top: 110,
-          child: Text(
-            AppFormat.price(45988),
+  return Stack(
+    children: [
+      Image.asset(
+        'assets/bg_card.png',
+      ),
+      Positioned(
+        left: 60,
+        top: 110,
+        child: Obx(() {
+          return Text(
+            AppFormat.price(userController.walletBalance.value),
             style: const TextStyle(
               color: Colors.white,
               fontSize: 36,
               fontWeight: FontWeight.w700,
             ),
-          ),
-        ),
-        Positioned(
-          left: 60,
-          right: 60,
-          bottom: 106,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Obx(() {
-                return Text(
-                  userController.data.name ?? '',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                  ),
-                );
-              }),
-              const Text(
-                '12/27',
-                style: TextStyle(
+          );
+        }),
+      ),
+      Positioned(
+        left: 60,
+        right: 60,
+        bottom: 106,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Obx(() {
+              return Text(
+                userController.data.name ?? '',
+                style: const TextStyle(
                   fontSize: 16,
                   color: Colors.white,
                 ),
+              );
+            }),
+            const Text(
+              '12/27',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.white,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
+
 
   Widget payments() {
     return Padding(

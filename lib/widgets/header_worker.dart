@@ -7,20 +7,23 @@ class HeaderWorker extends StatelessWidget {
       required this.subtitle,
       required this.iconLeft,
       required this.functionLeft,
-      required this.iconRight,
-      required this.functionRight});
+      this.iconRight = '', // Menjadikan iconRight opsional, dengan default ''
+      this.functionRight}); // Menjadikan functionRight opsional
+
   final String title;
   final String subtitle;
   final String iconLeft;
   final VoidCallback functionLeft;
   final String iconRight;
-  final VoidCallback functionRight;
+  final VoidCallback? functionRight; // Menjadikan functionRight opsional
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
+        mainAxisAlignment:
+            MainAxisAlignment.center, // Menjaga header tetap di tengah
         children: [
           IconButton.filled(
             onPressed: functionLeft,
@@ -56,18 +59,20 @@ class HeaderWorker extends StatelessWidget {
               ],
             ),
           ),
-          IconButton.filled(
-            onPressed: functionRight,
-            icon: ImageIcon(AssetImage(iconRight)),
-            style: const ButtonStyle(
-              backgroundColor: MaterialStatePropertyAll(
-                Colors.white,
-              ),
-              foregroundColor: MaterialStatePropertyAll(
-                Colors.black,
+          // Menangani jika iconRight dan functionRight null
+          if (iconRight.isNotEmpty && functionRight != null)
+            IconButton.filled(
+              onPressed: functionRight,
+              icon: ImageIcon(AssetImage(iconRight)),
+              style: const ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll(
+                  Colors.white,
+                ),
+                foregroundColor: MaterialStatePropertyAll(
+                  Colors.black,
+                ),
               ),
             ),
-          ),
         ],
       ),
     );

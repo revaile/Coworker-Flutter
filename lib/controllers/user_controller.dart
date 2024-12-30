@@ -53,4 +53,10 @@ class UserController extends GetxController {
   }
 }
 
+ // Fungsi untuk mengurangi saldo dompet
+  var walletBalance = 45988.0.obs; // Saldo awal dompet
+  void deductWallet(double amount) {
+    walletBalance.value -= amount;
+  }
+
 }

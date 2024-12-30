@@ -2,6 +2,7 @@ import 'package:cowok/config/appwrite.dart';
 import 'package:cowok/config/color.dart';
 import 'package:cowok/config/enum.dart';
 import 'package:cowok/controllers/list_worker_controller.dart';
+import 'package:cowok/datasources/worker_datasource.dart';
 import 'package:cowok/models/worker_model.dart';
 import 'package:cowok/widgets/header_worker.dart';
 import 'package:d_view/d_view.dart';
@@ -23,9 +24,31 @@ class _ListWorkerPageState extends State<ListWorkerPage> {
   final listWorkerController = Get.put(ListWorkerController());
   final TextEditingController searchController = TextEditingController();
 
+    int totalWorkers = 0;
+  int availableWorkers = 0;
+  String errorMessage = '';
+
+ Future<void> fetchStats() async {
+    final result = await WorkerDatasource.fetchStats();
+    result.fold(
+      (error) {
+        setState(() {
+          errorMessage = error;
+        });
+      },
+      (data) {
+        setState(() {
+          totalWorkers = data['total']!;
+          availableWorkers = data['available']!;
+        });
+      },
+    );
+  }
+
   @override
   void initState() {
     listWorkerController.fetchAvailable(widget.category);
+        fetchStats();
     listWorkerController.fetchTopRatedWorkers();
     super.initState();
   }
@@ -68,11 +91,9 @@ class _ListWorkerPageState extends State<ListWorkerPage> {
                         padding: const EdgeInsets.only(top: 40),
                         child: HeaderWorker(
                           title: widget.category,
-                          subtitle: '13,492 workers',
+                          subtitle:'Total worker $totalWorkers',
                           iconLeft: 'assets/ic_back.png',
                           functionLeft: () => Navigator.pop(context),
-                          iconRight: 'assets/ic_filter.png',
-                          functionRight: () {},
                         ),
                       ),
                       searchBox(),

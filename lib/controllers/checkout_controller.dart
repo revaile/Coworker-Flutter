@@ -16,21 +16,6 @@ class CheckoutController extends GetxController {
       'label': 'Wallet',
       'is_active': true,
     },
-    {
-      'image': 'assets/ic_master_card.png',
-      'label': 'CC',
-      'is_active': false,
-    },
-    {
-      'image': 'assets/ic_paypal.png',
-      'label': 'PayPal',
-      'is_active': false,
-    },
-    {
-      'image': 'assets/ic_other.png',
-      'label': 'Other',
-      'is_active': false,
-    },
   ];
 
   final _loading = false.obs;

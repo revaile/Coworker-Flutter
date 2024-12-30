@@ -100,50 +100,42 @@ class _BookingPageState extends State<BookingPage> {
     );
   }
 
-  Widget details() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SectionTitle(text: 'Details'),
-          Obx(() {
-            return itemDetail(
-              'Hiring duration',
-              '${bookingController.duration} hours',
-            );
-          }),
-          itemDetail(
-            'Date',
-            DateFormat('dd MMM yyyy')
-                .format(bookingController.bookingDetail.date),
-          ),
-          GetBuilder<BookingController>(builder: (_) {
-            return itemDetail(
-              'Sub total',
-              AppFormat.price(_.bookingDetail.subtotal),
-            );
-          }),
-          itemDetail(
-            'Insurance',
-            AppFormat.price(bookingController.bookingDetail.insurance),
-          ),
-          itemDetail(
-            'Tax 14%',
-            AppFormat.price(bookingController.bookingDetail.tax),
-          ),
-          itemDetail(
+ Widget details() {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 20),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SectionTitle(text: 'Details'),
+        Obx(() {
+          return itemDetail(
+            'Hiring duration',
+            '${bookingController.duration} hours',
+          );
+        }),
+        Obx(() {
+          return itemDetail(
+            'Sub total',
+            AppFormat.price(bookingController.bookingDetail.subtotal),
+          );
+        }),
+        Obx(() {
+          return itemDetail(
             'Platform fee',
             AppFormat.price(bookingController.bookingDetail.platformFee),
-          ),
-          itemDetail(
+          );
+        }),
+        Obx(() {
+          return itemDetail(
             'Grand total',
             AppFormat.price(bookingController.bookingDetail.grandTotal),
-          ),
-        ],
-      ),
-    );
-  }
+          );
+        }),
+      ],
+    ),
+  );
+}
+
 
   Widget itemDetail(String title, String data) {
     return Padding(
@@ -238,40 +230,41 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   Widget selectDuration() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SectionTitle(text: 'How many hours?', autoPadding: true),
-        DView.spaceHeight(),
-        SizedBox(
-          height: 100,
-          child: Obx(() {
-            int durationSelected = bookingController.duration;
-            return ListView.builder(
-              padding: const EdgeInsets.only(left: 20),
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              itemCount: bookingController.hourDuartion.length,
-              itemBuilder: (context, index) {
-                int itemDuration = bookingController.hourDuartion[index];
-                return GestureDetector(
-                  onTap: () {
-                    bookingController.setDuration(
-                      itemDuration,
-                      widget.worker.hourRate,
-                    );
-                  },
-                  child: itemDuration == durationSelected
-                      ? itemDurationSelected(itemDuration)
-                      : itemDurationUnSelected(itemDuration),
-                );
-              },
-            );
-          }),
-        ),
-      ],
-    );
-  }
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const SectionTitle(text: 'How many hours?', autoPadding: true),
+      DView.spaceHeight(),
+      SizedBox(
+        height: 100,
+        child: Obx(() {
+          int durationSelected = bookingController.duration;
+          return ListView.builder(
+            padding: const EdgeInsets.only(left: 20),
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            itemCount: bookingController.hourDuartion.length,
+            itemBuilder: (context, index) {
+              int itemDuration = bookingController.hourDuartion[index];
+              return GestureDetector(
+                onTap: () {
+                  bookingController.setDuration(
+                    itemDuration,
+                    widget.worker.hourRate, // Pass the worker's hourly rate
+                  );
+                },
+                child: itemDuration == durationSelected
+                    ? itemDurationSelected(itemDuration)
+                    : itemDurationUnSelected(itemDuration),
+              );
+            },
+          );
+        }),
+      ),
+    ],
+  );
+}
+
 
   Container itemDurationSelected(int itemDuration) {
     return Container(

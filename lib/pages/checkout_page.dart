@@ -6,7 +6,6 @@ import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
 import '../controllers/user_controller.dart';
 import '../widgets/header_worker_left.dart';
 
@@ -128,10 +127,25 @@ class _CheckoutPageState extends State<CheckoutPage> {
               if (checkoutController.loading) return DView.loadingCircle();
               return FilledButton.icon(
                 onPressed: () {
-                  checkoutController.execute(
-                    context,
-                    bookingController.bookingDetail,
-                  );
+                  double totalPay = bookingController.bookingDetail.grandTotal;
+                  if (userController.walletBalance.value >= totalPay) {
+                    // Kurangi saldo dompet
+                    userController.deductWallet(totalPay);
+
+                    // Jalankan proses checkout
+                    checkoutController.execute(
+                      context,
+                      bookingController.bookingDetail,
+                    );
+                  } else {
+                    // Tampilkan pesan saldo tidak cukup
+                    Get.snackbar(
+                      'Insufficient Balance',
+                      'Your wallet balance is not enough to complete the payment.',
+                      backgroundColor: Colors.redAccent,
+                      colorText: Colors.white,
+                    );
+                  }
                 },
                 icon: const ImageIcon(
                   AssetImage('assets/ic_secure.png'),
@@ -167,14 +181,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
         Positioned(
           left: 60,
           top: 110,
-          child: Text(
-            AppFormat.price(45988),
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 36,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
+          child: Obx(() {
+            return Text(
+              AppFormat.price(userController.walletBalance.value),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 36,
+                fontWeight: FontWeight.w700,
+              ),
+            );
+          }),
         ),
         Positioned(
           left: 60,
