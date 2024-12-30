@@ -286,48 +286,20 @@ class _OrderFragmentState extends State<OrderFragment> {
       child: Row(
         children: [
           const Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'My Workers',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'My Workers',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                Text(
-                  '13,492 transactions',
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          IconButton.filled(
-            onPressed: () {},
-            icon: const ImageIcon(AssetImage('assets/ic_search.png')),
-            style: const ButtonStyle(
-              backgroundColor: MaterialStatePropertyAll(
-                Colors.white,
-              ),
-              foregroundColor: MaterialStatePropertyAll(
-                Colors.black,
-              ),
-            ),
-          ),
-          IconButton.filled(
-            onPressed: () {},
-            icon: const ImageIcon(AssetImage('assets/ic_filter.png')),
-            style: const ButtonStyle(
-              backgroundColor: MaterialStatePropertyAll(
-                Colors.white,
-              ),
-              foregroundColor: MaterialStatePropertyAll(
-                Colors.black,
+                ],
               ),
             ),
           ),
