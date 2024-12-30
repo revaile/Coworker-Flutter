@@ -111,40 +111,42 @@ class BrowseController extends GetxController {
     },
   ];
 
-var searchResults = [].obs;
+  var searchResults = [].obs;
 
+  void search(String query) {
+    if (query.isEmpty) {
+      searchResults.clear();
+      return;
+    }
 
-void search(String query) {
-  if (query.isEmpty) {
-    searchResults.clear();
-    return;
+    query = query.toLowerCase();
+
+    // Cari di highRatedWorkers
+    var highRatedResults = highRatedWorkers.where((worker) {
+      var name = worker['name']?.toString().toLowerCase() ?? '';
+      return name.contains(query);
+    }).toList();
+
+    // Cari di newcomers
+    var newcomersResults = newcomers.where((newcomer) {
+      var name = newcomer['name']?.toString().toLowerCase() ?? '';
+      var job = newcomer['job']?.toString().toLowerCase() ?? '';
+      return name.contains(query) || job.contains(query);
+    }).toList();
+
+    // Tentukan hasil akhir
+    if (highRatedResults.isNotEmpty) {
+      searchResults.assignAll(highRatedResults);
+    } else if (newcomersResults.isNotEmpty) {
+      searchResults.assignAll(newcomersResults);
+    } else {
+      // Tidak ada hasil, tambahkan pesan "Not Found"
+      searchResults.assignAll([
+        {
+          'message': 'Not Found',
+          'description': 'No matches found for your query'
+        }
+      ]);
+    }
   }
-
-  query = query.toLowerCase();
-
-  // Cari di highRatedWorkers
-  var highRatedResults = highRatedWorkers.where((worker) {
-    var name = worker['name']?.toString().toLowerCase() ?? '';
-    return name.contains(query);
-  }).toList();
-
-  // Cari di newcomers
-  var newcomersResults = newcomers.where((newcomer) {
-    var name = newcomer['name']?.toString().toLowerCase() ?? '';
-    var job = newcomer['job']?.toString().toLowerCase() ?? '';
-    return name.contains(query) || job.contains(query);
-  }).toList();
-
-  // Tentukan hasil akhir
-  if (highRatedResults.isNotEmpty) {
-    searchResults.assignAll(highRatedResults);
-  } else if (newcomersResults.isNotEmpty) {
-    searchResults.assignAll(newcomersResults);
-  } else {
-    searchResults.clear(); // Tidak ada hasil
-  }
-}
-
-
-
 }

@@ -165,200 +165,202 @@ class _BrowseFragmentState extends State<BrowseFragment> {
   }
 
   Widget newcomers() {
-  return Obx(() {
-   // Jika searchResults ada dan bukan bagian dari newcomers, kosongkan
-    final newcomers = browseController.searchResults.isNotEmpty
-        ? browseController.searchResults
-            .where((item) => item['job'] != null) // Hanya untuk newcomers
-            .toList()
-        : browseController.newcomers;
+    return Obx(() {
+      // Jika searchResults ada dan bukan bagian dari newcomers, kosongkan
+      final newcomers = browseController.searchResults.isNotEmpty
+          ? browseController.searchResults
+              .where((item) => item['job'] != null) // Hanya untuk newcomers
+              .toList()
+          : browseController.newcomers;
 
-    if (newcomers.isEmpty) {
-      return const Center(
-        child: Text(
-          'No newcomers found.',
-          style: TextStyle(color: Colors.grey, fontSize: 16),
-        ),
-      );
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SectionTitle(text: 'Newcomers', autoPadding: true),
-        DView.spaceHeight(),
-        GridView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisExtent: 74,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
+      if (newcomers.isEmpty) {
+        return const Center(
+          child: Text(
+            'No newcomers found.',
+            style: TextStyle(color: Colors.grey, fontSize: 16),
           ),
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: newcomers.length,
-          itemBuilder: (context, index) {
-            Map item = newcomers[index];
-            return Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xffeaeaea)),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    item['image'] ?? 'assets/placeholder.png', // Placeholder jika null
-                    width: 46,
-                    height: 46,
-                  ),
-                  DView.spaceWidth(12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          item['name'] ?? 'Unknown', // Default jika null
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          ),
-                        ),
-                        if (item.containsKey('job')) // Tampilkan job jika ada
-                          Text(
-                            item['job'] ?? 'Unknown', // Default jika null
-                            style: const TextStyle(
-                              color: Colors.grey,
-                            ),
-                          ),
-                        if (item.containsKey('rate')) // Tampilkan rate jika ada
-                          Row(
-                            children: [
-                              Image.asset(
-                                'assets/ic_star_small.png',
-                                height: 16,
-                                width: 16,
-                              ),
-                              DView.spaceWidth(2),
-                              Text(
-                                '${item['rate'] ?? 0.0}',
-                                style: const TextStyle(color: Colors.black),
-                              ),
-                            ],
-                          ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            );
-          },
-        ),
-      ],
-    );
-  });
-}
+        );
+      }
 
-
-
- Widget highRatedWorkers() {
-  return Obx(() {
-    // Jika searchResults ada dan bukan bagian dari highRatedWorkers, kosongkan
-    final workers = browseController.searchResults.isNotEmpty
-        ? browseController.searchResults
-            .where((item) => item['rate'] != null) // Hanya untuk highRatedWorkers
-            .toList()
-        : browseController.highRatedWorkers;
-
-    if (workers.isEmpty) {
-      return const Center(
-        child: Text(
-          'No high-rated workers found.',
-          style: TextStyle(color: Colors.grey, fontSize: 16),
-        ),
-      );
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SectionTitle(text: 'High Rated Workers', autoPadding: true),
-        DView.spaceHeight(),
-        SizedBox(
-          height: 120,
-          child: ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            itemCount: workers.length,
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SectionTitle(text: 'Newcomers', autoPadding: true),
+          DView.spaceHeight(),
+          GridView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisExtent: 74,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+            ),
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: newcomers.length,
             itemBuilder: (context, index) {
-              Map worker = workers[index];
+              Map item = newcomers[index];
               return Container(
-                width: 100,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: const Color(0xffeaeaea)),
                 ),
-                margin: EdgeInsets.only(
-                  left: index == 0 ? 20 : 8,
-                  right: index == workers.length - 1 ? 20 : 8,
-                ),
-                child: Column(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
-                      worker['image'] ?? 'assets/placeholder.png', // Placeholder jika null
+                      item['image'] ??
+                          'assets/placeholder.png', // Placeholder jika null
                       width: 46,
                       height: 46,
                     ),
-                    DView.spaceHeight(6),
-                    Text(
-                      worker['name'] ?? 'Unknown', // Default jika null
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
-                    ),
-                    DView.spaceHeight(4),
-                    if (worker.containsKey('rate')) // Tampilkan rate jika ada
-                      Row(
+                    DView.spaceWidth(12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset(
-                            'assets/ic_star_small.png',
-                            height: 16,
-                            width: 16,
-                          ),
-                          DView.spaceWidth(2),
                           Text(
-                            '${worker['rate'] ?? 0.0}',
+                            item['name'] ?? 'Unknown', // Default jika null
                             style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
                               color: Colors.black,
                             ),
                           ),
+                          if (item.containsKey('job')) // Tampilkan job jika ada
+                            Text(
+                              item['job'] ?? 'Unknown', // Default jika null
+                              style: const TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                          if (item
+                              .containsKey('rate')) // Tampilkan rate jika ada
+                            Row(
+                              children: [
+                                Image.asset(
+                                  'assets/ic_star_small.png',
+                                  height: 16,
+                                  width: 16,
+                                ),
+                                DView.spaceWidth(2),
+                                Text(
+                                  '${item['rate'] ?? 0.0}',
+                                  style: const TextStyle(color: Colors.black),
+                                ),
+                              ],
+                            ),
                         ],
                       ),
-                    if (worker.containsKey('job')) // Tampilkan job jika ada
-                      Text(
-                        worker['job'] ?? 'Unknown', // Default jika null
-                        style: const TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
+                    )
                   ],
                 ),
               );
             },
           ),
-        ),
-      ],
-    );
-  });
-}
+        ],
+      );
+    });
+  }
+
+  Widget highRatedWorkers() {
+    return Obx(() {
+      // Jika searchResults ada dan bukan bagian dari highRatedWorkers, kosongkan
+      final workers = browseController.searchResults.isNotEmpty
+          ? browseController.searchResults
+              .where((item) =>
+                  item['rate'] != null) // Hanya untuk highRatedWorkers
+              .toList()
+          : browseController.highRatedWorkers;
+
+      if (workers.isEmpty) {
+        return const Center(
+          child: Text(
+            'No high-rated workers found.',
+            style: TextStyle(color: Colors.grey, fontSize: 16),
+          ),
+        );
+      }
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SectionTitle(text: 'High Rated Workers', autoPadding: true),
+          DView.spaceHeight(),
+          SizedBox(
+            height: 120,
+            child: ListView.builder(
+              physics: const BouncingScrollPhysics(),
+              scrollDirection: Axis.horizontal,
+              itemCount: workers.length,
+              itemBuilder: (context, index) {
+                Map worker = workers[index];
+                return Container(
+                  width: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: const Color(0xffeaeaea)),
+                  ),
+                  margin: EdgeInsets.only(
+                    left: index == 0 ? 20 : 8,
+                    right: index == workers.length - 1 ? 20 : 8,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        worker['image'] ??
+                            'assets/placeholder.png', // Placeholder jika null
+                        width: 46,
+                        height: 46,
+                      ),
+                      DView.spaceHeight(6),
+                      Text(
+                        worker['name'] ?? 'Unknown', // Default jika null
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ),
+                      DView.spaceHeight(4),
+                      if (worker.containsKey('rate')) // Tampilkan rate jika ada
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/ic_star_small.png',
+                              height: 16,
+                              width: 16,
+                            ),
+                            DView.spaceWidth(2),
+                            Text(
+                              '${worker['rate'] ?? 0.0}',
+                              style: const TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      if (worker.containsKey('job')) // Tampilkan job jika ada
+                        Text(
+                          worker['job'] ?? 'Unknown', // Default jika null
+                          style: const TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      );
+    });
+  }
 
   Widget latestStats() {
     return Padding(
@@ -392,7 +394,7 @@ class _BrowseFragmentState extends State<BrowseFragment> {
                             ),
                           ),
                           Text(
-                            'Hired',
+                            'Total Worker',
                             style: TextStyle(
                               color: Colors.black,
                             ),
@@ -425,7 +427,7 @@ class _BrowseFragmentState extends State<BrowseFragment> {
                             ),
                           ),
                           Text(
-                            'Expense',
+                            'Available',
                             style: TextStyle(
                               color: Colors.black,
                             ),
