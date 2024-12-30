@@ -1,4 +1,3 @@
-
 import 'package:cowok/config/color.dart';
 import 'package:cowok/config/enum.dart';
 import 'package:cowok/controllers/worker_profile_controller.dart';
@@ -281,7 +280,13 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
           Expanded(
             child: FilledButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/rating');
+                // Pastikan 'workerId' dikirim sebagai argument
+                final workerId = 'some_worker_id'; // Ganti dengan ID sebenarnya
+                Navigator.pushNamed(
+                  context,
+                  '/rating',
+                  arguments: workerId, // Kirim workerId sebagai arguments
+                );
               },
               child: const Text('Give Rating'),
             ),

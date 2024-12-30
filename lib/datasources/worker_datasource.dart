@@ -197,4 +197,57 @@ class WorkerDatasource {
       return Left(message);
     }
   }
+ static Future<Either<String, void>> updateWorkerRating({
+  required String workerId,
+  required double newRating,
+}) async {
+  try {
+    // Ambil data worker saat ini
+    final response = await Appwrite.databases.getDocument(
+      databaseId: Appwrite.databaseId,
+      collectionId: Appwrite.collectionWorkers,
+      documentId: workerId,
+    );
+
+    final currentData = response.toMap();
+    final currentRating = (currentData['rating'] ?? 0).toDouble();
+    final currentRatingCount = (currentData['rating_count'] ?? 0) as int;
+
+    // Hitung rating baru
+    final updatedRating =
+        ((currentRating * currentRatingCount) + newRating) / (currentRatingCount + 1);
+
+    // Perbarui data worker
+    await Appwrite.databases.updateDocument(
+      databaseId: Appwrite.databaseId,
+      collectionId: Appwrite.collectionWorkers,
+      documentId: workerId,
+      data: {
+        'rating': updatedRating, // Memperbarui hanya field rating
+      },
+    );
+
+    AppLog.success(
+      body: 'Rating updated successfully for Worker ID: $workerId',
+      title: 'Worker - updateWorkerRating',
+    );
+
+    return const Right(null);
+  } catch (e) {
+    AppLog.error(
+      body: e.toString(),
+      title: 'Worker - updateWorkerRating',
+    );
+
+    String defaulMessage = 'Failed to update rating';
+    String message = defaulMessage;
+
+    if (e is AppwriteException) {
+      message = e.message ?? defaulMessage;
+    }
+
+    return Left(message);
+  }
+}
+
 }

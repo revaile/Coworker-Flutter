@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 
+    //
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
@@ -99,8 +99,11 @@ class MyApp extends StatelessWidget {
         '/tipsSelection': (context) => const ProductivityPage(),
         '/scaleUpTips': (context) => const BusinesPages(),
         '/cleanerSelection': (context) => const HealthPages(),
-        '/rating': (context) => const RatingPage(),
         '/': (context) => const SplashScreenPage(),
+        '/rating': (context) {
+          final workerId = ModalRoute.of(context)!.settings.arguments as String;
+          return RatingPage(workerId: workerId);
+        },
       },
     );
   }

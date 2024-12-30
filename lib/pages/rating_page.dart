@@ -1,8 +1,13 @@
+import 'package:cowok/controllers/rating_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:get/get.dart';
 
 class RatingPage extends StatelessWidget {
-  const RatingPage({super.key});
+  final String workerId;
+  final RatingController controller = Get.put(RatingController());
+
+  RatingPage({super.key, required this.workerId});
 
   @override
   Widget build(BuildContext context) {
@@ -25,40 +30,41 @@ class RatingPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              RatingBar.builder(
-                initialRating: 0,
-                minRating: 1,
-                direction: Axis.horizontal,
-                allowHalfRating: true,
-                itemCount: 5,
-                itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-                itemBuilder: (context, _) => const Icon(
-                  Icons.star,
-                  color: Colors.amber,
-                ),
-                onRatingUpdate: (rating) {
-                  debugPrint('Rating: $rating');
-                },
-              ),
+              Obx(() {
+                return RatingBar.builder(
+                  initialRating: controller.currentRating.value,
+                  minRating: 1,
+                  direction: Axis.horizontal,
+                  allowHalfRating: true,
+                  itemCount: 5,
+                  itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  itemBuilder: (context, _) => const Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  ),
+                  onRatingUpdate: (rating) {
+                    controller.currentRating.value = rating;
+                  },
+                );
+              }),
               const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () {
-                  // Tambahkan logika untuk menyimpan rating
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Thank you for your rating!'),
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 32.0, vertical: 12.0),
-                ),
-                child: const Text(
-                  'Submit',
-                  style: TextStyle(fontSize: 20, ),
-                ),
-              ),
+              Obx(() {
+                return ElevatedButton(
+                  onPressed: controller.isSubmitting.value
+                      ? null
+                      : () => controller.submitRating(workerId),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 32.0, vertical: 12.0),
+                  ),
+                  child: controller.isSubmitting.value
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          'Submit',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                );
+              }),
             ],
           ),
         ),
@@ -66,3 +72,4 @@ class RatingPage extends StatelessWidget {
     );
   }
 }
+

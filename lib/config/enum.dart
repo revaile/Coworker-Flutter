@@ -10,5 +10,5 @@ enum AppRoute {
   successBooking,
   userprofile, 
   editProfile, 
-  completedList, orderPage, splashScreen,
+  completedList, orderPage, splashScreen, rating,
 }
