@@ -51,12 +51,6 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: DView.appBarCenter('Dashboard'),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _logout(context), // Call the logout method
-        child: Icon(Icons.logout),
-      ),
-
 
       body: Obx(() => dashboardController.currentFragment),
 

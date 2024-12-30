@@ -213,9 +213,10 @@ class WorkerDatasource {
     final currentRating = (currentData['rating'] ?? 0).toDouble();
     final currentRatingCount = (currentData['rating_count'] ?? 0) as int;
 
-    // Hitung rating baru
-    final updatedRating =
-        ((currentRating * currentRatingCount) + newRating) / (currentRatingCount + 1);
+    // Hitung rating baru dan tambahkan 1 ke rating_count
+    final updatedRating = ((currentRating * currentRatingCount) + newRating) /
+        (currentRatingCount + 1);
+    final updatedRatingCount = currentRatingCount + 1;
 
     // Perbarui data worker
     await Appwrite.databases.updateDocument(
@@ -223,10 +224,12 @@ class WorkerDatasource {
       collectionId: Appwrite.collectionWorkers,
       documentId: workerId,
       data: {
-        'rating': updatedRating, // Memperbarui hanya field rating
+        'rating': updatedRating, // Perbarui nilai rating
+        'rating_count': updatedRatingCount, // Perbarui nilai rating_count
       },
     );
 
+    // Logging jika berhasil
     AppLog.success(
       body: 'Rating updated successfully for Worker ID: $workerId',
       title: 'Worker - updateWorkerRating',
@@ -234,16 +237,17 @@ class WorkerDatasource {
 
     return const Right(null);
   } catch (e) {
+    // Logging jika gagal
     AppLog.error(
       body: e.toString(),
       title: 'Worker - updateWorkerRating',
     );
 
-    String defaulMessage = 'Failed to update rating';
-    String message = defaulMessage;
+    String defaultMessage = 'Failed to update rating';
+    String message = defaultMessage;
 
     if (e is AppwriteException) {
-      message = e.message ?? defaulMessage;
+      message = e.message ?? defaultMessage;
     }
 
     return Left(message);

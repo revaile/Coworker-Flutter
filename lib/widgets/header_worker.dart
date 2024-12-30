@@ -27,7 +27,7 @@ class HeaderWorker extends StatelessWidget {
         children: [
           IconButton.filled(
             onPressed: functionLeft,
-            icon: ImageIcon(AssetImage(iconLeft)),
+            icon: ImageIcon(AssetImage(iconLeft)), 
             style: const ButtonStyle(
               backgroundColor: MaterialStatePropertyAll(
                 Colors.white,
