@@ -281,7 +281,7 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
             child: FilledButton(
               onPressed: () {
                 // Pastikan 'workerId' dikirim sebagai argument
-                final workerId = 'some_worker_id'; // Ganti dengan ID sebenarnya
+                final workerId = widget.worker.$id; // Ganti dengan ID sebenarnya
                 Navigator.pushNamed(
                   context,
                   '/rating',
