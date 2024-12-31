@@ -121,7 +121,7 @@ class _OrderFragmentState extends State<OrderFragment> {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xffeaeaea)),
+                border: Border.all(color: const Color(0xffB3DCF2)),
               ),
               padding: const EdgeInsets.all(12),
               margin: const EdgeInsets.only(bottom: 16),
@@ -156,15 +156,35 @@ class _OrderFragmentState extends State<OrderFragment> {
                       ],
                     ),
                   ),
-                  Text(
-                    booking.hiringDuration.toString(),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
-                    ),
+                  Row(
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            booking.hiringDuration.toString(),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const Text(' hours'),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Column(
+                        children: [
+                          Image.asset(
+                            'assets/ic_edit.png',
+                            width: 20,
+                          ),
+                          Text('endOrder')
+                        ],
+                      ),
+                    ],
                   ),
-                  const Text(' hours'),
                 ],
               ),
             ),
@@ -190,7 +210,7 @@ class _OrderFragmentState extends State<OrderFragment> {
           return Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xffeaeaea)),
+              border: Border.all(color: Colors.green),
             ),
             padding: const EdgeInsets.all(12),
             margin: const EdgeInsets.only(bottom: 16),
