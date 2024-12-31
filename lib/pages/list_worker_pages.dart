@@ -247,7 +247,7 @@ class _ListWorkerPageState extends State<ListWorkerPage> {
                           ),
                           DView.spaceWidth(2),
                           Text(
-                            '${worker.rating}',
+                            '${worker.rating.toStringAsFixed(1)}',
                             style: const TextStyle(
                               color: Colors.black,
                             ),
@@ -357,7 +357,7 @@ class _ListWorkerPageState extends State<ListWorkerPage> {
                               ),
                               DView.spaceWidth(2),
                               Text(
-                                item.rating.toString(),
+                                item.rating.toStringAsFixed(1),
                                 style: const TextStyle(
                                   color: Colors.black,
                                 ),
