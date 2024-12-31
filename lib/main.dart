@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
     //
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Workmates',
       theme: ThemeData.light(
         useMaterial3: true,
       ).copyWith(

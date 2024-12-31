@@ -4,56 +4,61 @@ import 'package:cowok/config/appwrite.dart';
 import 'package:dartz/dartz.dart';
 
 class UserDatasource {
-  static Future<Either<String, Map>> signUp(
+static Future<Either<String, Map>> signUp(
     String name,
     String email,
     String password,
-  ) async {
+) async {
     try {
-      final resultAuth = await Appwrite.account.create(
-        userId: ID.unique(),
-        email: email,
-        password: password,
-      );
+        // Membuat user di Appwrite
+        final resultAuth = await Appwrite.account.create(
+            userId: ID.unique(),
+            email: email,
+            password: password,
+        );
 
-      final response = await Appwrite.databases.createDocument(
-        databaseId: Appwrite.databaseId,
-        collectionId: Appwrite.collectionUsers,
-        documentId: resultAuth.$id,
-        data: {
-          'name': name,
-          'email': email,
-          'password': password,
-        },
-      );
+        // Membuat sesi setelah register
+        await Appwrite.account.createEmailPasswordSession(
+            email: email,
+            password: password,
+        );
 
-      Map data = response.data;
-      AppLog.success(
-        body: data.toString(),
-        title: 'User - SignUp',
-      );
+        // Simpan data pengguna ke database
+        final response = await Appwrite.databases.createDocument(
+            databaseId: Appwrite.databaseId,
+            collectionId: Appwrite.collectionUsers,
+            documentId: resultAuth.$id,
+            data: { 'name': name, 'email': email, 'password': password },
+        );
 
-      return Right(data);
+        Map data = response.data;
+        AppLog.success(
+            body: data.toString(),
+            title: 'User - SignUp',
+        );
+
+        return Right(data);
     } catch (e) {
-      AppLog.error(
-        body: e.toString(),
-        title: 'User - SignUp',
-      );
+        AppLog.error(
+            body: e.toString(),
+            title: 'User - SignUp',
+        );
 
-      String defaultMessage = 'Terjadi suatu masalah';
-      String message = defaultMessage;
+        String defaultMessage = 'Terjadi suatu masalah';
+        String message = defaultMessage;
 
-      if (e is AppwriteException) {
-        if (e.code == 409) {
-          message = 'Email sudah terdaftar';
-        } else {
-          message = e.message ?? defaultMessage;
+        if (e is AppwriteException) {
+            if (e.code == 409) {
+                message = 'Email sudah terdaftar';
+            } else {
+                message = e.message ?? defaultMessage;
+            }
         }
-      }
 
-      return Left(message);
+        return Left(message);
     }
-  }
+}
+
 
   static Future<Either<String, Map>> signIn(
     String email,
