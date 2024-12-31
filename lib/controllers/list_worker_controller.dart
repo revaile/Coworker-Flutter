@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cowok/datasources/worker_datasource.dart';
 import 'package:cowok/models/worker_model.dart';
 import 'package:get/get.dart';

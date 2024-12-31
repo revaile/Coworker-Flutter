@@ -1,9 +1,6 @@
 import 'package:cowok/datasources/booking_datasource.dart';
 import 'package:get/get.dart';
 
-import 'package:cowok/datasources/booking_datasource.dart';
-import 'package:get/get.dart';
-
 class WorkerProfileController extends GetxController {
   // Membuat recruiterId sebagai variabel reaktif
   var _recruiterId = ''.obs;
@@ -31,5 +28,6 @@ class WorkerProfileController extends GetxController {
   // Fungsi untuk membersihkan controller
   void clear() {
     Get.delete<WorkerProfileController>(force: true);
+    super.onClose();
   }
 }

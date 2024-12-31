@@ -153,7 +153,7 @@ class _SuccessBookingPageState extends State<SuccessBookingPage> {
         ),
         DView.spaceWidth(8),
         Text(
-          '(${AppFormat.number(bookingController.bookingDetail.worker!.ratingCount)})',
+          '(${AppFormat.number(bookingController.bookingDetail.worker!.rating_count)})',
           style: const TextStyle(
             fontWeight: FontWeight.w600,
             color: Colors.black,

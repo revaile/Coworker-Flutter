@@ -2,7 +2,6 @@ import 'package:cowok/controllers/dasboard_controller.dart';
 import 'package:cowok/controllers/user_controller.dart';
 import 'package:cowok/models/user_model.dart';
 import 'package:d_session/d_session.dart';
-import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart'; // Import GetX
 import 'package:cowok/pages/sign_in_page.dart'; // Your sign-in page

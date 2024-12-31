@@ -53,6 +53,7 @@ class WorkerDatasource {
       return Left(message);
     }
   }
+
   static Future<Either<String, List<WorkerModel>>> fetchTopRated() async {
     try {
       // Query for workers with rating above 4.5
@@ -99,9 +100,9 @@ class WorkerDatasource {
       return Left(message);
     }
   }
+
   // total
-  static Future<Either<String, Map<String, int>>> fetchStats(
-  ) async {
+  static Future<Either<String, Map<String, int>>> fetchStats() async {
     try {
       // Ambil total worker
       final totalResponse = await Appwrite.databases.listDocuments(
@@ -146,13 +147,14 @@ class WorkerDatasource {
       return Left(message);
     }
   }
-  
+
   // Fetch newcomers
   static Future<Either<String, List<WorkerModel>>> fetchNewcomers() async {
     try {
       // Get the current date-time and calculate 7 days ago
       final now = DateTime.now();
-      final oneWeekAgo = now.subtract(const Duration(days: 7)).toIso8601String();
+      final oneWeekAgo =
+          now.subtract(const Duration(days: 7)).toIso8601String();
 
       // Query workers added after oneWeekAgo
       final response = await Appwrite.databases.listDocuments(
@@ -197,61 +199,63 @@ class WorkerDatasource {
       return Left(message);
     }
   }
- static Future<Either<String, void>> updateWorkerRating({
-  required String workerId,
-  required double newRating,
-}) async {
-  try {
-    // Ambil data worker saat ini
-    final response = await Appwrite.databases.getDocument(
-      databaseId: Appwrite.databaseId,
-      collectionId: Appwrite.collectionWorkers,
-      documentId: workerId,
-    );
 
-    final currentData = response.toMap();
-    final currentRating = (currentData['rating'] ?? 0).toDouble();
-    final currentRatingCount = (currentData['rating_count'] ?? 0) as int;
+  static Future<Either<String, void>> updateWorkerRating({
+    required String workerId,
+    required double newRating,
+  }) async {
+    try {
+      // Ambil data worker saat ini
+      final response = await Appwrite.databases.getDocument(
+        databaseId: Appwrite.databaseId,
+        collectionId: Appwrite.collectionWorkers,
+        documentId: workerId,
+      );
 
-    // Hitung rating baru dan tambahkan 1 ke rating_count
-    final updatedRating = ((currentRating * currentRatingCount) + newRating) /
-        (currentRatingCount + 1);
-    final updatedRatingCount = currentRatingCount + 1;
+      final currentData = response.toMap();
+      final workerData = currentData['data'] ?? {};
+      final currentRating = (workerData['rating'] ?? 0).toDouble();
+      final currentRatingCount = (workerData['rating_count'] ?? 0).toInt();
 
-    // Perbarui data worker
-    await Appwrite.databases.updateDocument(
-      databaseId: Appwrite.databaseId,
-      collectionId: Appwrite.collectionWorkers,
-      documentId: workerId,
-      data: {
-        'rating': updatedRating, // Perbarui nilai rating
-        'rating_count': updatedRatingCount, // Perbarui nilai rating_count
-      },
-    );
+      // Hitung rating baru dan tambahkan 1 ke rating_count
+      final updatedRating = ((currentRating * currentRatingCount) + newRating) /
+          (currentRatingCount + 1);
+      final updatedRatingCount = currentRatingCount + 1;
 
-    // Logging jika berhasil
-    AppLog.success(
-      body: 'Rating updated successfully for Worker ID: $workerId',
-      title: 'Worker - updateWorkerRating',
-    );
+      // Perbarui data worker
+      await Appwrite.databases.updateDocument(
+        databaseId: Appwrite.databaseId,
+        collectionId: Appwrite.collectionWorkers,
+        documentId: workerId,
+        data: {
+          'rating': updatedRating,
+          'rating_count': updatedRatingCount,
+        },
+      );
 
-    return const Right(null);
-  } catch (e) {
-    // Logging jika gagal
-    AppLog.error(
-      body: e.toString(),
-      title: 'Worker - updateWorkerRating',
-    );
+      // Logging jika berhasil
+      AppLog.success(
+        body:
+            'Rating updated successfully for Worker ID: $workerId, $currentData, $currentRating, $currentRatingCount, $updatedRating, $updatedRatingCount',
+        title: 'Worker - updateWorkerRating',
+      );
 
-    String defaultMessage = 'Failed to update rating';
-    String message = defaultMessage;
+      return const Right(null);
+    } catch (e) {
+      // Logging jika gagal
+      AppLog.error(
+        body: e.toString(),
+        title: 'Worker - updateWorkerRating',
+      );
 
-    if (e is AppwriteException) {
-      message = e.message ?? defaultMessage;
+      String defaultMessage = 'Failed to update rating';
+      String message = defaultMessage;
+
+      if (e is AppwriteException) {
+        message = e.message ?? defaultMessage;
+      }
+
+      return Left(message);
     }
-
-    return Left(message);
   }
-}
-
 }

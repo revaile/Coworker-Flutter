@@ -53,7 +53,7 @@ class RatingPage extends StatelessWidget {
                 return ElevatedButton(
                   onPressed: controller.isSubmitting.value
                       ? null
-                      : () => controller.submitRating(workerId),
+                      : () => controller.submitRating(context, workerId, controller.currentRating.value),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 32.0, vertical: 12.0),

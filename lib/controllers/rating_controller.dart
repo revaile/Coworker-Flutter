@@ -1,20 +1,43 @@
-
+import 'package:cowok/controllers/worker_profile_controller.dart';
+import 'package:cowok/datasources/worker_datasource.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class RatingController extends GetxController {
   var currentRating = 0.0.obs;
   var isSubmitting = false.obs;
+  final WorkerProfileController workerProfileController = Get.put(WorkerProfileController());
 
-  Future<void> submitRating(String workerId) async {
+
+  Future<void> submitRating(BuildContext context, String workerId, double newRating) async {
     try {
       isSubmitting.value = true;
-      // Simulate API call or rating submission logic here
-      await Future.delayed(const Duration(seconds: 2)); // Replace with actual API call
-      // Success! Close the page
-      Get.back(); // Close the current page
-      Get.snackbar('Success', 'Rating submitted successfully!',
-          snackPosition: SnackPosition.BOTTOM);
+
+      // Call the updateWorkerRating function from worker_datasource
+      final result = await WorkerDatasource.updateWorkerRating(
+        workerId: workerId,
+        newRating: newRating,
+      );
+
+      result.fold(
+        (failureMessage) {
+          // If the update failed, show an error message
+          Get.snackbar('Error', failureMessage,
+              snackPosition: SnackPosition.BOTTOM);
+        },
+        (_) async {
+          // If the update was successful, show a success message
+          Get.snackbar('Success', 'Rating submitted successfully!',
+              snackPosition: SnackPosition.BOTTOM);
+
+          // Reset the rating and close the page
+          currentRating.value = 0.0; // Reset rating to 0
+          workerProfileController.checkHiredBy(workerId);
+          Navigator.pop(context);
+        },
+      );
     } catch (e) {
+      // In case of any errors during the rating submission
       Get.snackbar('Error', 'Failed to submit rating: $e',
           snackPosition: SnackPosition.BOTTOM);
     } finally {
@@ -22,4 +45,3 @@ class RatingController extends GetxController {
     }
   }
 }
-

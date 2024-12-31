@@ -1,6 +1,5 @@
 import 'package:cowok/config/appwrite.dart';
 import 'package:get/get.dart';
-import 'package:appwrite/appwrite.dart'; // Pastikan package Appwrite diimpor
 import '../models/user_model.dart';
 
 class UserController extends GetxController {

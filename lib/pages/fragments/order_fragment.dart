@@ -1,8 +1,6 @@
 import 'package:cowok/config/color.dart';
-import 'package:cowok/config/enum.dart';
 import 'package:cowok/models/booking_models.dart';
 import 'package:cowok/models/worker_model.dart';
-import 'package:cowok/snakbar/snackbar.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

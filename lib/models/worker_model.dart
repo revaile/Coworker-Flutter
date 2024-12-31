@@ -5,7 +5,7 @@ class WorkerModel {
   int experience;
   double hourRate;
   double rating;
-  double ratingCount;
+  double rating_count;
   String status;
   String about;
   List<String> strengths;
@@ -21,7 +21,7 @@ class WorkerModel {
     required this.experience,
     required this.hourRate,
     required this.rating,
-    required this.ratingCount,
+    required this.rating_count,
     required this.status,
     required this.about,
     required this.strengths,
@@ -38,7 +38,7 @@ class WorkerModel {
         experience: json["experience"],
         hourRate: json["hour_rate"]?.toDouble(),
         rating: json["rating"]?.toDouble(),
-        ratingCount: json["rating_count"]?.toDouble(),
+        rating_count: json["rating_count"]?.toDouble(),
         status: json["status"],
         about: json["about"],
         strengths: List<String>.from(json["strengths"].map((x) => x)),
@@ -55,7 +55,7 @@ class WorkerModel {
         "experience": experience,
         "hour_rate": hourRate,
         "rating": rating,
-        "rating_count": ratingCount,
+        "rating_count": rating_count,
         "status": status,
         "about": about,
         "strengths": List<dynamic>.from(strengths.map((x) => x)),

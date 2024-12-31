@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/user_controller.dart'; // Import the controller
-import '../widgets/widget_name_edit.dart'; // Assuming you have a custom widget for text inputs
 
 class EditeProfile extends StatelessWidget {
   const EditeProfile({super.key});
@@ -47,6 +46,7 @@ class EditeProfile extends StatelessWidget {
                 onConfirm: () async {
                   // Tutup dialog terlebih dahulu
                   Get.back();
+                  Navigator.pop(context);
 
                   try {
                     // Update data profile

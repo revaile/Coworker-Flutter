@@ -2,7 +2,6 @@ import 'package:cowok/pages/fragments/browse_fragment.dart';
 import 'package:cowok/pages/fragments/order_fragment.dart';
 import 'package:cowok/pages/fragments/setings_fragment.dart';
 import 'package:cowok/pages/fragments/wallet_fragment.dart';
-import 'package:d_view/d_view.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 

@@ -2,6 +2,7 @@ import 'package:cowok/config/color.dart';
 import 'package:cowok/config/enum.dart';
 import 'package:cowok/controllers/worker_profile_controller.dart';
 import 'package:cowok/models/worker_model.dart';
+import 'package:cowok/pages/rating_page.dart';
 import 'package:cowok/widgets/secondary_button.dart';
 import 'package:cowok/widgets/section_title.dart';
 import 'package:d_view/d_view.dart';
@@ -41,6 +42,7 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final WorkerProfileController workerProfileController = Get.put(WorkerProfileController());
     return Scaffold(
       bottomNavigationBar: Obx(() {
         String recruiterId = workerProfileController.recruiterId;
@@ -169,34 +171,38 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
           DView.spaceHeight(8),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              children: [
-                RatingBar.builder(
-                  initialRating: widget.worker.rating,
-                  minRating: 1,
-                  direction: Axis.horizontal,
-                  allowHalfRating: true,
-                  itemCount: 5,
-                  itemSize: 20,
-                  itemPadding: const EdgeInsets.all(0),
-                  itemBuilder: (context, _) => const Icon(
-                    Icons.star,
-                    color: Colors.amber,
+            child: Obx(() {
+              return Row(
+                children: [
+                  RatingBar.builder(
+                    initialRating: workerProfileController.recruiterId == 'Available'
+                      ? widget.worker.rating
+                      : widget.worker.rating, // Default logic
+                    minRating: 1,
+                    direction: Axis.horizontal,
+                    allowHalfRating: true,
+                    itemCount: 5,
+                    itemSize: 20,
+                    itemPadding: const EdgeInsets.all(0),
+                    itemBuilder: (context, _) => const Icon(
+                      Icons.star,
+                      color: Colors.amber,
+                    ),
+                    onRatingUpdate: (rating) {},
+                    ignoreGestures: true,
                   ),
-                  onRatingUpdate: (rating) {},
-                  ignoreGestures: true,
-                ),
-                DView.spaceWidth(8),
-                Text(
-                  '(${AppFormat.number(widget.worker.ratingCount)})',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                    fontSize: 16,
+                  DView.spaceWidth(8),
+                  Text(
+                    '(${AppFormat.number(widget.worker.rating_count)})',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              );
+            }),
           ),
           DView.spaceHeight(30),
           const SectionTitle(text: 'My Strengths', autoPadding: true),
@@ -280,13 +286,13 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
           Expanded(
             child: FilledButton(
               onPressed: () {
-                // Pastikan 'workerId' dikirim sebagai argument
-                final workerId = widget.worker.$id; // Ganti dengan ID sebenarnya
-                Navigator.pushNamed(
-                  context,
-                  '/rating',
-                  arguments: workerId, // Kirim workerId sebagai arguments
-                );
+                final workerId = widget.worker.$id; // Get the worker ID
+                Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RatingPage(workerId: workerId), // Pass workerId
+                ),
+              );
               },
               child: const Text('Give Rating'),
             ),
