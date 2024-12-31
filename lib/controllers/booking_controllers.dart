@@ -9,7 +9,7 @@ class BookingController extends GetxController {
     Get.delete<BookingController>(force: true);
   }
 
-  final hourDuartion = [5, 10, 15, 25, 40, 100];
+  final hourDuration = [5, 10, 15, 25, 40, 100];
 
   final _duration = 10.obs;
   int get duration => _duration.value;

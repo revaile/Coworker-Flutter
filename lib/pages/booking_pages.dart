@@ -243,9 +243,9 @@ class _BookingPageState extends State<BookingPage> {
             padding: const EdgeInsets.only(left: 20),
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
-            itemCount: bookingController.hourDuartion.length,
+            itemCount: bookingController.hourDuration.length,
             itemBuilder: (context, index) {
-              int itemDuration = bookingController.hourDuartion[index];
+              int itemDuration = bookingController.hourDuration[index];
               return GestureDetector(
                 onTap: () {
                   bookingController.setDuration(
@@ -375,7 +375,7 @@ class _BookingPageState extends State<BookingPage> {
                         ),
                         DView.spaceWidth(2),
                         Text(
-                          widget.worker.rating.toString(),
+                          widget.worker.rating.toStringAsFixed(1),
                           style: const TextStyle(
                             color: Colors.black,
                           ),
