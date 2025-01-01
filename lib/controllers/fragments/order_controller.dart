@@ -1,4 +1,5 @@
 import 'package:cowok/config/app_info.dart';
+import 'package:cowok/config/appwrite.dart';
 import 'package:cowok/datasources/booking_datasource.dart';
 import 'package:cowok/models/booking_models.dart';
 import 'package:flutter/material.dart';
@@ -103,4 +104,29 @@ class OrderController extends GetxController {
       }
     });
   }
+void markAsRated(String workerId, String bookingId) async {
+  try {
+    // Update di local list
+    for (var booking in _completed) {
+      if (booking.worker?.$id == workerId) {
+        booking.hasRated = true; // Tandai booking sebagai sudah diberi rating
+        break;
+      }
+    }
+    _completed.refresh(); // Trigger pembaruan UI
+
+    // Update di database
+    await Appwrite.databases.updateDocument(
+      databaseId: Appwrite.databaseId,
+      collectionId: Appwrite.collectionBooking,
+      documentId: bookingId,
+      data: {'hasRated': true},
+    );
+  } catch (e) {
+    Get.snackbar('Error', 'Failed to update rating status: $e',
+        snackPosition: SnackPosition.BOTTOM);
+  }
+}
+
+  
 }

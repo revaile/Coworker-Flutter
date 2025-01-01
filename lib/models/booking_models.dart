@@ -17,7 +17,7 @@ class BookingModel {
   String $createdAt;
   String $updatedAt;
   WorkerModel? worker;
-  
+  bool hasRated; // Tambahkan atribut ini
 
   BookingModel({
     required this.userId,
@@ -35,6 +35,7 @@ class BookingModel {
     required this.$createdAt,
     required this.$updatedAt,
     this.worker,
+    this.hasRated = false, // Default: belum memberikan rating
   });
 
   factory BookingModel.fromJson(
@@ -57,6 +58,7 @@ class BookingModel {
         $createdAt: json["\$createdAt"],
         $updatedAt: json["\$updatedAt"],
         worker: worker,
+        hasRated: json['hasRated'] ?? false,
       );
 
   Map<String, dynamic> toJson() => {
@@ -88,5 +90,6 @@ class BookingModel {
         "grand_total": grandTotal,
         "pay_with": payWith,
         "status": status,
+        'hasRated': hasRated,
       };
 }

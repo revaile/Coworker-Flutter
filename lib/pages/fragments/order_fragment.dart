@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import '../../config/appwrite.dart';
 import '../../controllers/fragments/order_controller.dart';
 import '../../controllers/user_controller.dart';
+import '../rating_page.dart';
 
 class OrderFragment extends StatefulWidget {
   const OrderFragment({super.key});
@@ -243,17 +244,43 @@ class _OrderFragmentState extends State<OrderFragment> {
                     ],
                   ),
                 ),
-                Row(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      booking.hiringDuration.toString(),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
+                    Row(
+                      children: [
+                        Text(
+                          booking.hiringDuration.toString(),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const Text(' hours'),
+                      ],
+                    ),
+                    DView.spaceHeight(8),
+                    // Ubah tombol untuk menggunakan MaterialPageRoute
+                    ElevatedButton(
+                      onPressed: () {
+                        final workerId = worker.$id; // Ambil ID pekerja
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                RatingPage(workerId: workerId),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                      ),
+                      child: const Text(
+                        'Give Rating',
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
-                    const Text(' hours'),
                   ],
                 ),
               ],

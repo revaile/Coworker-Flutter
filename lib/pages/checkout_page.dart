@@ -150,7 +150,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 icon: const ImageIcon(
                   AssetImage('assets/ic_secure.png'),
                 ),
-                label: const Text('Pay Now'),
+                label: const Text('Pay Noww'),
               );
             }),
           ),
