@@ -1,3 +1,4 @@
+import 'package:cowok/config/enum.dart';
 import 'package:cowok/controllers/booking_controllers.dart';
 import 'package:cowok/widgets/secondary_button.dart';
 import 'package:d_view/d_view.dart';
@@ -116,10 +117,8 @@ class _SuccessBookingPageState extends State<SuccessBookingPage> {
                   width: 270,
                   child: SecondaryButton(
                     onPressed: () {
-                      successBookingController.toListWorker(
-                        context,
-                        bookingController.bookingDetail.worker!.category,
-                      );
+                      Navigator.pushReplacementNamed(
+                          context, AppRoute.dashboard.name);
                     },
                     child: const Text('Hire other worker'),
                   ),

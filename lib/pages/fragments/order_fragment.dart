@@ -193,115 +193,126 @@ class _OrderFragmentState extends State<OrderFragment> {
     });
   }
 
-  Widget completedList() {
-    return Obx(() {
-      String statusFetch = orderController.statusCompleted;
-      if (statusFetch == '') return DView.nothing();
-      if (statusFetch == 'Loading') return DView.loadingCircle();
-      if (statusFetch != 'Success') return DView.error(data: statusFetch);
-      List<BookingModel> list = orderController.completed;
-      return ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        itemCount: list.length,
-        itemBuilder: (context, index) {
-          BookingModel booking = list[index];
-          WorkerModel worker = booking.worker!;
-          return Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.green),
-            ),
-            padding: const EdgeInsets.all(12),
-            margin: const EdgeInsets.only(bottom: 16),
-            child: Row(
-              children: [
-                Image.network(
-                  Appwrite.imageURL(worker.image),
-                  width: 60,
-                  height: 60,
-                ),
-                DView.spaceWidth(12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        worker.name,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
-                      ),
-                      DView.spaceHeight(2),
-                      Text(
-                        worker.category,
-                        style: const TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
+ Widget completedList() {
+  return Obx(() {
+    String statusFetch = orderController.statusCompleted;
+    if (statusFetch == '') return DView.nothing();
+    if (statusFetch == 'Loading') return DView.loadingCircle();
+    if (statusFetch != 'Success') return DView.error(data: statusFetch);
+    List<BookingModel> list = orderController.completed;
+
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      itemCount: list.length,
+      itemBuilder: (context, index) {
+        BookingModel booking = list[index];
+        WorkerModel worker = booking.worker!;
+        bool hasRated = booking.hasRated; // Awalnya dari data model
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.green),
+              ),
+              padding: const EdgeInsets.all(12),
+              margin: const EdgeInsets.only(bottom: 16),
+              child: Row(
+                children: [
+                  Image.network(
+                    Appwrite.imageURL(worker.image),
+                    width: 60,
+                    height: 60,
                   ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Row(
+                  DView.spaceWidth(12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          booking.hiringDuration.toString(),
+                          worker.name,
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: Colors.black,
                           ),
                         ),
-                        const Text(' hours'),
+                        DView.spaceHeight(2),
+                        Text(
+                          worker.category,
+                          style: const TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
                       ],
                     ),
-                    DView.spaceHeight(8),
-                    // Ubah tombol untuk menggunakan MaterialPageRoute
-                    booking.hasRated
-                    ? const Text(
-                        'Rated',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey,
-                        ),
-                      )
-                    : ElevatedButton(
-                        onPressed: () {
-                          final workerId = worker.$id; // Worker ID
-                          final bookingId = booking.$id;
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RatingPage(
-                                workerId: workerId,
-                                bookingId: bookingId,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            booking.hiringDuration.toString(),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const Text(' hours'),
+                        ],
+                      ),
+                      DView.spaceHeight(8),
+                      hasRated
+                          ? const Text(
+                              'Rated',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey,
+                              ),
+                            )
+                          : ElevatedButton(
+                              onPressed: () async {
+                                final workerId = worker.$id; // Worker ID
+                                final bookingId = booking.$id;
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => RatingPage(
+                                      workerId: workerId,
+                                      bookingId: bookingId,
+                                    ),
+                                  ),
+                                );
+                                // Perbarui status hasRated setelah kembali dari halaman Rating
+                                setState(() {
+                                  hasRated = true;
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green,
+                              ),
+                              child: const Text(
+                                'Give Rating',
+                                style: TextStyle(color: Colors.white),
                               ),
                             ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
-                        ),
-                        child: const Text(
-                          'Give Rating',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                  ],
-                ),
-              ],
-            ),
-          );
-        },
-      );
-    });
-  }
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  });
+}
+
 
   Widget menuOrder(String title) {
     return GestureDetector(
