@@ -437,7 +437,7 @@ class _BrowseFragmentState extends State<BrowseFragment> {
                                       ),
                                       DView.spaceWidth(2),
                                       Text(
-                                        '${worker.rating}',
+                                        '${worker.rating.toStringAsFixed(1)}',
                                         style: const TextStyle(
                                           color: Colors.black,
                                         ),
