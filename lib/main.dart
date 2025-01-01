@@ -102,7 +102,8 @@ class MyApp extends StatelessWidget {
         '/': (context) => const SplashScreenPage(),
         '/rating': (context) {
           final workerId = ModalRoute.of(context)!.settings.arguments as String;
-          return RatingPage(workerId: workerId);
+          final bookingId = ModalRoute.of(context)!.settings.arguments as String;
+          return RatingPage(workerId: workerId, bookingId: bookingId,);
         },
       },
     );

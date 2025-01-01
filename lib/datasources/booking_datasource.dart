@@ -197,4 +197,39 @@ class BookingDatasource {
       return Left(message);
     }
   }
+  
+  static Future<Either<String, BookingModel>> setRated(
+    String bookingId,
+    String workerId,
+  ) async {
+    try {
+      final response = await Appwrite.databases.updateDocument(
+        databaseId: Appwrite.databaseId,
+        collectionId: Appwrite.collectionBooking,
+        documentId: bookingId,
+        data: {'hasRated': true},
+      );
+
+      AppLog.success(
+        body: response.toMap().toString(),
+        title: 'Booking - setRated',
+      );
+
+      return Right(BookingModel.fromJson(response.data));
+    } catch (e) {
+      AppLog.error(
+        body: e.toString(),
+        title: 'Booking - setRated',
+      );
+
+      String defaulMessage = 'Terjadi suatu masalah';
+      String message = defaulMessage;
+
+      if (e is AppwriteException) {
+        message = e.message ?? defaulMessage;
+      }
+
+      return Left(message);
+    }
+  }
 }

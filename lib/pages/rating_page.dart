@@ -5,9 +5,10 @@ import 'package:get/get.dart';
 
 class RatingPage extends StatelessWidget {
   final String workerId;
+  final String bookingId;
   final RatingController controller = Get.put(RatingController());
 
-  RatingPage({super.key, required this.workerId});
+  RatingPage({super.key, required this.workerId, required this.bookingId});
   
 
   @override
@@ -53,7 +54,7 @@ class RatingPage extends StatelessWidget {
                 return ElevatedButton(
                   onPressed: controller.isSubmitting.value
                       ? null
-                      : () => controller.submitRating(context, workerId, controller.currentRating.value),
+                      : () => controller.submitRating(context, bookingId, workerId, controller.currentRating.value),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 32.0, vertical: 12.0),

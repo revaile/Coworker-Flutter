@@ -1,4 +1,5 @@
 import 'package:cowok/controllers/worker_profile_controller.dart';
+import 'package:cowok/datasources/booking_datasource.dart';
 import 'package:cowok/datasources/worker_datasource.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,10 +7,11 @@ import 'package:get/get.dart';
 class RatingController extends GetxController {
   var currentRating = 0.0.obs;
   var isSubmitting = false.obs;
-  final WorkerProfileController workerProfileController = Get.put(WorkerProfileController());
+  final WorkerProfileController workerProfileController =
+      Get.put(WorkerProfileController());
 
-
-  Future<void> submitRating(BuildContext context, String workerId, double newRating) async {
+  Future<void> submitRating(BuildContext context, String bookingId,
+      String workerId, double newRating) async {
     try {
       isSubmitting.value = true;
 
@@ -29,11 +31,28 @@ class RatingController extends GetxController {
           // If the update was successful, show a success message
           Get.snackbar('Success', 'Rating submitted successfully!',
               snackPosition: SnackPosition.BOTTOM);
+          final setRatedResult = await BookingDatasource.setRated(
+            bookingId,
+            workerId,
+          );
 
-          // Reset the rating and close the page
-          currentRating.value = 0.0; // Reset rating to 0
-          workerProfileController.checkHiredBy(workerId);
-          Navigator.pop(context);
+          setRatedResult.fold(
+            (failureMessage) {
+              // If setRated failed, show an error message
+              Get.snackbar('Error', failureMessage,
+                  snackPosition: SnackPosition.BOTTOM);
+            },
+            (_) {
+              // If successful, show a success message
+              Get.snackbar('Success', 'Rating submitted successfully!',
+                  snackPosition: SnackPosition.BOTTOM);
+
+              // Reset the rating and close the page
+              currentRating.value = 0.0; // Reset rating to 0
+              workerProfileController.checkHiredBy(workerId);
+              Navigator.pop(context);
+            },
+          );
         },
       );
     } catch (e) {

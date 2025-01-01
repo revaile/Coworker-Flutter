@@ -57,9 +57,6 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
         if (recruiterId == 'Available') {
           return hireNow();
         }
-        if (recruiterId == userController.data.$id) {
-          return hireByYou();
-        }
         return hireByOther();
       }),
       body: ListView(
@@ -270,31 +267,6 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
             child: SecondaryButton(
               onPressed: () {},
               child: const Text('Not Available'),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget hireByYou() {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Row(
-        children: [
-          DView.spaceWidth(),
-          Expanded(
-            child: FilledButton(
-              onPressed: () {
-                final workerId = widget.worker.$id; // Get the worker ID
-                Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => RatingPage(workerId: workerId), // Pass workerId
-                ),
-              );
-              },
-              child: const Text('Give Rating'),
             ),
           ),
         ],

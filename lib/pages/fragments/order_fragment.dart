@@ -262,25 +262,37 @@ class _OrderFragmentState extends State<OrderFragment> {
                     ),
                     DView.spaceHeight(8),
                     // Ubah tombol untuk menggunakan MaterialPageRoute
-                    ElevatedButton(
-                      onPressed: () {
-                        final workerId = worker.$id; // Ambil ID pekerja
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                RatingPage(workerId: workerId),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
+                    booking.hasRated
+                    ? const Text(
+                        'Rated',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
+                      )
+                    : ElevatedButton(
+                        onPressed: () {
+                          final workerId = worker.$id; // Worker ID
+                          final bookingId = booking.$id;
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RatingPage(
+                                workerId: workerId,
+                                bookingId: bookingId,
+                              ),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                        ),
+                        child: const Text(
+                          'Give Rating',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
-                      child: const Text(
-                        'Give Rating',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
                   ],
                 ),
               ],
