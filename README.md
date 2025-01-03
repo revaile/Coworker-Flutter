@@ -2,25 +2,19 @@
 
 Workmates adalah aplikasi mobile yang dirancang untuk membantu pencari kerja menemukan pekerjaan yang sesuai dan perusahaan kecil/startup menemukan individu yang kompeten.
 
+## Unduh Aplikasi
+Aplikasi Workmates tersedia di Google Play Store.  
+[Unduh Workmates di Google Play Store](https://play.google.com/store/apps/details?id=com.rival.cowok)
+
 ## Ikon Aplikasi
 ![Ikon Workmates](https://github.com/revaile/Coworker-Flutter/blob/main/assets/icon/icon.png?raw=true)
 
 ## Tampilan Aplikasi
-### Halaman Awal
-![Tampilan Halaman Awal](https://github.com/revaile/Coworker-Flutter/blob/main/start.png?raw=true)
+![Tampilan Halaman Awal](https://github.com/revaile/Coworker-Flutter/blob/main/banner.png?raw=true)
 
-### Fitur Utama
-1. **Tampilan Pencarian Pekerjaan**  
-   ![Tampilan Pencarian Pekerjaan](https://github.com/revaile/Coworker-Flutter/blob/main/start2.png?raw=true)
-
-2. **Tampilan Pencocokan Kandidat**  
-   ![Tampilan Pencocokan Kandidat](https://github.com/revaile/Coworker-Flutter/blob/main/start3.png?raw=true)
-
-3. **Tampilan Profil Pengguna**  
-   ![Tampilan Profil Pengguna](https://github.com/revaile/Coworker-Flutter/blob/main/start4.png?raw=true)
 
 ## Demo Aplikasi
-[Lihat demo aplikasi Workmates di YouTube](https://youtu.be/l5VY5u8dmJU)
+[![Demo Aplikasi Workmates](https://img.youtube.com/vi/l5VY5u8dmJU/maxresdefault.jpg)](https://youtu.be/l5VY5u8dmJU)
 
 ---
 
